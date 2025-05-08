@@ -33,6 +33,9 @@ def encontrar_pregunta(pregunta):
             return i
     return None
 
+def reemplazar_datos(respuesta, datos):
+    return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
+
 while True:
     pregunta = input("Ingrese su pregunta: ")
     
@@ -44,9 +47,13 @@ while True:
         
     if pregunta_indice is not None and pais_indice is not None:
         
-        pais_data = paises_data[paises_data]
-        respuesta = preguntas_patrones[pregunta_indice].split(", ")[1].strip()
+        pais_data = paises_data[pais_indice]
+        respuesta_obtenida = preguntas[pregunta_indice].split(", ")[1].strip()
         
-        print(respuesta)
+        respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
+        
+        print(respuesta_final)
     else:
         print("Disculpe, no entendí su pregunta")
+        
+print("Un placer ayudarte en lo que pueda, espero volver a verte pronto :)")
