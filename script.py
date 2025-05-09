@@ -2,6 +2,14 @@ import re
 # print("Buenas! Soy un chat bot especializado en geografía.")
 # print("¿En qué puedo ayudarte hoy?")
 
+def leer_archivo():
+    with open("preguntas.txt","r",encoding="utf-8") as file:
+        return file.readlines()
+    
+def escribir_archivo(archivo_actualizado):
+    with open("preguntas.txt","w", encoding="utf-8") as file:
+        file.writelines(archivo_actualizado)
+
 with open("preguntas.txt", "r", encoding="utf-8") as file:
     lineas = file.readlines()
     for linea in lineas:
@@ -37,14 +45,18 @@ def reemplazar_datos(respuesta, datos):
     return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
 
 def agregar_pais():
+    archivo = leer_archivo("preguntas.txt")
+    
     pais = input('Ingrese el nombre del pais ').strip()
     ciudad = input('ingrese el nombre de la ciudad ').strip()
     continente = input('ingrese el continente ').strip()
-    if (pais, ciudad, continente) not in paises_data:
-        paises_data.append((pais, ciudad, continente))
-        with open('preguntas.txt', 'a', encoding='utf-8') as file:
-            file.write(f', ({pais}, {ciudad}, {continente})')
-        print(f'datos de {pais} ingresados')
+    
+    if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR)
+        for i, linea in enumerate(archivo):
+            if linea.startswith("paises:"):
+                archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n" 
+                break
+        escribir_archivo("preguntas.txt", archivo)
     else:
         print('ese pais ya esta en el programa')
 
@@ -57,8 +69,14 @@ def agregar_pregunta():
         preg = input('ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais* , *ciudad* , o *continente* ')
         resp = input('ahora, ingrese la respuesta ')  
         print('ejemplo: en que continente queda *pais*, *pais* queda en *continente* ') 
-        with open('preguntas.txt', 'a', encoding='utf-8') as file:
-            file.write(f'. ({preg}, {resp})') 
+        
+        archivo = leer_archivo()
+        
+        for i, linea in enumerate(archivo):
+            if linea.startswith("Preguntas:"):
+                archivo[i] = f'{linea.strip()}, ({preg}, {resp})\n'
+                break
+        escribir_archivo(archivo)
         print('pregunta agregada')
     
 while True:
@@ -86,7 +104,7 @@ while True:
             if tipopreg == 'pregunta':
                 agregar_pregunta()
             elif tipopreg == 'pais':
-              agregar_pais()  
+              agregar_pais() 
             else:
                 print('respuesta invalida')
        
