@@ -36,6 +36,30 @@ def encontrar_pregunta(pregunta):
 def reemplazar_datos(respuesta, datos):
     return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
 
+def agregar_pais():
+    pais = input('Ingrese el nombre del pais ').strip()
+    ciudad = input('ingrese el nombre de la ciudad ').strip()
+    continente = input('ingrese el continente ').strip()
+    if (pais, ciudad, continente) not in paises_data:
+        paises_data.append((pais, ciudad, continente))
+        with open('preguntas.txt', 'a', encoding='utf-8') as file:
+            file.write(f', ({pais}, {ciudad}, {continente})')
+        print(f'datos de {pais} ingresados')
+    else:
+        print('ese pais ya esta en el programa')
+
+def agregar_pregunta():
+    tipo_pregunta = input('ingrese el tipo de pregunta (ciudad,pais,continente)')
+    if tipo_pregunta not in ['ciudad', 'pais', 'continente' ]:
+        print('respuesta invalida')
+        return
+    else:
+        preg = input('ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais* , *ciudad* , o *continente* ')
+        resp = input('ahora, ingrese la respuesta ')  
+        print('ejemplo: en que continente queda *pais*, *pais* queda en *continente* ') 
+        with open('preguntas.txt', 'a', encoding='utf-8') as file:
+            file.write(f'. ({preg}, {resp})') 
+    
 while True:
     pregunta = input("Ingrese su pregunta: ")
     
@@ -55,5 +79,15 @@ while True:
         print(respuesta_final)
     else:
         print("Disculpe, no entendí su pregunta")
+        modificar = input('quiere agregar una pregunta? (si/no)')
+        if modificar == 'si':
+            tipopreg = input('desea agregar una pregunta o un pais ')
+            if tipopreg == 'pregunta':
+                agregar_pregunta()
+            elif tipopreg == 'pais':
+              agregar_pais()  
+            else:
+                print('respuesta invalida')
+       
         
-print("Un placer ayudarte en lo que pueda, espero volver a verte pronto :)")
+print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
