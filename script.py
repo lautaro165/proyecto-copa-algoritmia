@@ -59,6 +59,7 @@ def agregar_pregunta():
         print('ejemplo: en que continente queda *pais*, *pais* queda en *continente* ') 
         with open('preguntas.txt', 'a', encoding='utf-8') as file:
             file.write(f'. ({preg}, {resp})') 
+        print('pregunta agregada')
     
 while True:
     pregunta = input("Ingrese su pregunta: ")
