@@ -99,7 +99,9 @@ def agregar_pregunta():
 while True:
     pregunta = eliminar_acentos(input("Ingrese su pregunta: "))
     
-    # Acá agregar un mensaje puntual para el caso en donde el usuario haya hecho enter sin poner nada en la pregunta
+    if not pregunta:
+        print("Por favor ingrese una pregunta")
+        continue
     
     if pregunta.lower().strip() == "salir":
         break
@@ -109,13 +111,16 @@ while True:
     
     # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
     if pregunta_indice is not None and pais_indice is not None:
-        
         pais_data = paises_data[pais_indice]
         respuesta_obtenida = preguntas[pregunta_indice].split(", ")[1].strip()
         
         respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
         
         print(respuesta_final)
+    elif pregunta_indice is None:
+        pass
+    elif pais_indice is None:
+        pass
     else:
         print("--------------------------------") # Estas lineas divisorias son para mejor claridad en la consola
         print("Disculpe, no entendí su pregunta")
@@ -125,7 +130,7 @@ while True:
             print("Por favor, ingrese una de las siguientes opciones: ")
             print("1 - Agregar pregunta")
             print("2 - Registrar país") 
-            print("3 - Reformular su pregunta \n")
+            print("3 - Realizar una pregunta \n")
             opcion = eliminar_acentos(input(""))
             if opcion == '1':
                 agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
