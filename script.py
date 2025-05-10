@@ -3,6 +3,8 @@ import unicodedata
 # print("Buenas! Soy un chat bot especializado en geografía.")
 # print("¿En qué puedo ayudarte hoy?")
 
+#FALTA OPTIMIZAR BIEN EL TEMA DE APERTURAS INNECESARIAS DEL ARCHIVO (Lo hago yo)
+
 def eliminar_acentos(texto):
     texto_normalizado = unicodedata.normalize("NFD",texto)
     texto_sin_acento = "".join(char for char in texto_normalizado if not unicodedata.combining(char))
@@ -51,50 +53,61 @@ def reemplazar_datos(respuesta, datos):
     return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
 
 def agregar_pais():
-    archivo = leer_archivo("preguntas.txt")
+    archivo = leer_archivo()
     
+    print("--------------------------------")
     pais = eliminar_acentos(input('Ingrese el nombre del pais ').strip())
-    ciudad = eliminar_acentos(input('ingrese el nombre de la ciudad ').strip())
-    continente = eliminar_acentos(input('ingrese el continente ').strip())
-    
-    if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR)
+    ciudad = eliminar_acentos(input('Ingrese el nombre de la ciudad ').strip())
+    continente = eliminar_acentos(input('Ingrese el continente ').strip())
+    print("--------------------------------")
+    if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR), tambien hay que iterar para en cada dato para ver que no exista ya
         for i, linea in enumerate(archivo):
             if linea.startswith("paises:"):
                 archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n" 
                 break
-        escribir_archivo("preguntas.txt", archivo)
+        escribir_archivo(archivo)
+        print("Pais registrado exitosamente")
     else:
-        print('ese pais ya esta en el programa')
+        print('Ese pais ya esta en el programa') #Podriamos poner el nombre del pais que ya existe en este mensaje
 
 def agregar_pregunta():
-    tipo_pregunta = eliminar_acentos(input('ingrese el tipo de pregunta (ciudad,pais,continente)'))
-    if tipo_pregunta not in ['ciudad', 'pais', 'continente' ]:
-        print('respuesta invalida')
-        return
-    else:
-        preg = eliminar_acentos(input('ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais* , *ciudad* , o *continente* '))
-        resp = eliminar_acentos(input('ahora, ingrese la respuesta ')) 
-        print('ejemplo: en que continente queda *pais*, *pais* queda en *continente* ') 
-        
-        archivo = leer_archivo()
-        
-        for i, linea in enumerate(archivo):
-            if linea.startswith("Preguntas:"):
-                archivo[i] = f'{linea.strip()}, ({preg}, {resp})\n'
-                break
-        escribir_archivo(archivo)
-        print('pregunta agregada')
+    print("--------------------------------")
     
+    print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *ciudad* o *continente*')
+    print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
+    
+    
+    preg = eliminar_acentos(input("Pregunta: "))
+    
+    print("--------------------------------")
+    
+    resp = eliminar_acentos(input('Ahora, ingrese la respuesta: ')) 
+    
+    print("--------------------------------")
+    
+    archivo = leer_archivo()
+        
+    for i, linea in enumerate(archivo):
+        if linea.startswith("Preguntas:"):
+            archivo[i] = f'{linea.strip()}, ({preg}, {resp})'
+            break
+    escribir_archivo(archivo)
+    print('Pregunta registrada exitosamente!')
+
+
+# Se podria arrancar primero preguntando si lo que quiere el usuario es registrar algo o hacer la pregunta
 while True:
     pregunta = eliminar_acentos(input("Ingrese su pregunta: "))
-    print(pregunta)
+    
+    # Acá agregar un mensaje puntual para el caso en donde el usuario haya hecho enter sin poner nada en la pregunta
     
     if pregunta.lower().strip() == "salir":
         break
     
     pregunta_indice = encontrar_pregunta(pregunta)
     pais_indice = encontrar_pais(pregunta)
-        
+    
+    # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
     if pregunta_indice is not None and pais_indice is not None:
         
         pais_data = paises_data[pais_indice]
@@ -104,16 +117,25 @@ while True:
         
         print(respuesta_final)
     else:
+        print("--------------------------------") # Estas lineas divisorias son para mejor claridad en la consola
         print("Disculpe, no entendí su pregunta")
-        modificar = eliminar_acentos(input('quiere agregar una pregunta? (si/no)'))
-        if modificar == 'si':
-            tipopreg = eliminar_acentos(input('desea agregar una pregunta o un pais '))
-            if tipopreg == 'pregunta':
-                agregar_pregunta()
-            elif tipopreg == 'pais':
-              agregar_pais() 
+        print("--------------------------------")
+        while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
+            
+            print("Por favor, ingrese una de las siguientes opciones: ")
+            print("1 - Agregar pregunta")
+            print("2 - Registrar país") 
+            print("3 - Reformular su pregunta \n")
+            opcion = eliminar_acentos(input(""))
+            if opcion == '1':
+                agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
+            elif opcion == '2':
+                agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
+            elif opcion == "3":
+                break
             else:
-                print('respuesta invalida')
-       
+                print("--------------------------------")
+                print('Opción invalida')
+                print("--------------------------------")
         
 print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
