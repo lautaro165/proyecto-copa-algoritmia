@@ -1,6 +1,12 @@
 import re
+import unicodedata
 # print("Buenas! Soy un chat bot especializado en geografía.")
 # print("¿En qué puedo ayudarte hoy?")
+
+def eliminar_acentos(texto):
+    texto_normalizado = unicodedata.normalize("NFD",texto)
+    texto_sin_acento = "".join(char for char in texto_normalizado if not unicodedata.combining(char))
+    return texto_sin_acento
 
 def leer_archivo():
     with open("preguntas.txt","r",encoding="utf-8") as file:
@@ -47,9 +53,9 @@ def reemplazar_datos(respuesta, datos):
 def agregar_pais():
     archivo = leer_archivo("preguntas.txt")
     
-    pais = input('Ingrese el nombre del pais ').strip()
-    ciudad = input('ingrese el nombre de la ciudad ').strip()
-    continente = input('ingrese el continente ').strip()
+    pais = eliminar_acentos(input('Ingrese el nombre del pais ').strip())
+    ciudad = eliminar_acentos(input('ingrese el nombre de la ciudad ').strip())
+    continente = eliminar_acentos(input('ingrese el continente ').strip())
     
     if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR)
         for i, linea in enumerate(archivo):
@@ -61,13 +67,13 @@ def agregar_pais():
         print('ese pais ya esta en el programa')
 
 def agregar_pregunta():
-    tipo_pregunta = input('ingrese el tipo de pregunta (ciudad,pais,continente)')
+    tipo_pregunta = eliminar_acentos(input('ingrese el tipo de pregunta (ciudad,pais,continente)'))
     if tipo_pregunta not in ['ciudad', 'pais', 'continente' ]:
         print('respuesta invalida')
         return
     else:
-        preg = input('ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais* , *ciudad* , o *continente* ')
-        resp = input('ahora, ingrese la respuesta ')  
+        preg = eliminar_acentos(input('ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais* , *ciudad* , o *continente* '))
+        resp = eliminar_acentos(input('ahora, ingrese la respuesta ')) 
         print('ejemplo: en que continente queda *pais*, *pais* queda en *continente* ') 
         
         archivo = leer_archivo()
@@ -80,7 +86,8 @@ def agregar_pregunta():
         print('pregunta agregada')
     
 while True:
-    pregunta = input("Ingrese su pregunta: ")
+    pregunta = eliminar_acentos(input("Ingrese su pregunta: "))
+    print(pregunta)
     
     if pregunta.lower().strip() == "salir":
         break
@@ -98,9 +105,9 @@ while True:
         print(respuesta_final)
     else:
         print("Disculpe, no entendí su pregunta")
-        modificar = input('quiere agregar una pregunta? (si/no)')
+        modificar = eliminar_acentos(input('quiere agregar una pregunta? (si/no)'))
         if modificar == 'si':
-            tipopreg = input('desea agregar una pregunta o un pais ')
+            tipopreg = eliminar_acentos(input('desea agregar una pregunta o un pais '))
             if tipopreg == 'pregunta':
                 agregar_pregunta()
             elif tipopreg == 'pais':
