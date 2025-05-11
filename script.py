@@ -1,13 +1,10 @@
 import re
 import unicodedata
 # print("Buenas! Soy un chat bot especializado en geografía.")
-# print("¿En qué puedo ayudarte hoy?")
-
-#FALTA OPTIMIZAR BIEN EL TEMA DE APERTURAS INNECESARIAS DEL ARCHIVO (Lo hago yo)
 
 #-------------------------------------------------------------------------------------------------------------
 
-# APERTURA DEL ARCHIVO PARA SU POSTERIOR LECTURA/ESCRITURA
+# CARGA DE LOS DATOS DEL ARCHIVO
 def cargar_datos():
     
     global paises_data, preguntas, preguntas_patrones
@@ -126,6 +123,7 @@ def agregar_pais():
         cargar_datos()
         break
 
+#TERMINAR LAS VALIDACIONES NECESARIAS A ESTA FUNCION
 def agregar_pregunta():
     print("--------------------------------")
     
