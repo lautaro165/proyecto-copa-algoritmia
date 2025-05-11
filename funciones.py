@@ -80,6 +80,12 @@ def validar_capital(nombre):
     return bool(nombre)
 
 def validar_continente(nombre):
+    nombre_sin_acentos = eliminar_acentos(nombre.lower())
     if not nombre:
-        print(f"Se debe ingresar la capital de {nombre.capitalize()} para poder registrarlo")
-    return bool(nombre)
+        print(f"Se debe ingresar el continente de {nombre.capitalize()} para poder registrarlo")
+        return False
+    elif not nombre_sin_acentos in ["america", "africa", "asia", "oceania"]:
+        print("Continente invalido")
+        return False
+    
+    return nombre
