@@ -26,7 +26,7 @@ def validar_pregunta(pregunta):
         print("No se ingresó ninguna pregunta")
         return False
     elif not any(marcador in pregunta for marcador in marcadores):
-        print("Para poder registrar la pregunta, ésta debe contener uno de los siguientes marcadores: *capital* o *pais*")
+        print("Para poder registrar la pregunta, ésta debe contener uno de los siguientes marcadores: *capital* o *pais* o *continente*")
         return False
     elif funciones.eliminar_acentos(pregunta) in funciones.preguntas:
         print("Disculpe, esa pregunta ya está registrada")
@@ -50,7 +50,7 @@ def agregar_pais():
     while True:
         print("--------------------------------")
         pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
-        ciudad = funciones.pedir_dato('Ingrese el nombre de la ciudad: ', funciones.validar_capital)
+        capital = funciones.pedir_dato('Ingrese el nombre de la ciudad: ', funciones.validar_capital)
         continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
         
         for i, linea in enumerate(archivo):
@@ -108,8 +108,8 @@ def realizar_pregunta():
         if pregunta.lower().strip() == "salir" or pregunta.lower().strip() == "no":
             break
         
-        pregunta_indice = encontrar_pregunta(pregunta)
-        pais_indice = encontrar_pais(pregunta)
+        pregunta_indice = encontrar_pregunta(pregunta.lower())
+        pais_indice = encontrar_pais(pregunta.lower())
         
         # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
         if pregunta_indice is not None and pais_indice is not None:
@@ -149,15 +149,15 @@ def realizar_pregunta():
             while True:
                 print("1 - Sí")
                 print("2 - No")
-                decision = input("")
-                if not decision in ["1", "2"]:
+                decision = input("").lower()
+                if not decision in ["1", "2", 'si', 'no']:
                     print("Opcion invalida")
                     continue
                 break
-            if decision == "1":
+            if decision == "1" or decision == "si":
                 agregar_pais()
                 break
-            if decision == "2":
+            if decision == "2" or decision == "no":
                 print("--------------------------------")
                 continue
             print("--------------------------------")
