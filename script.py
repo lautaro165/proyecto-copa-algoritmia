@@ -55,7 +55,7 @@ def agregar_pais():
         
         for i, linea in enumerate(archivo):
             if linea.startswith("paises: "):
-                archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n"
+                archivo[i] = f"{linea.strip()}, ({pais}, {capital}, {continente})\n"
                 break
             
         funciones.escribir_archivo(archivo)
@@ -105,7 +105,7 @@ def realizar_pregunta():
             print("--------------------------------")
             continue
         
-        if pregunta.lower().strip() == "salir":
+        if pregunta.lower().strip() == "salir" or pregunta.lower().strip() == "no":
             break
         
         pregunta_indice = encontrar_pregunta(pregunta)
