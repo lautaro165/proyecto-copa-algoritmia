@@ -20,9 +20,13 @@ def encontrar_pregunta(pregunta):
     return None
 
 def validar_pregunta(pregunta):
+    marcadores = ["*capital*","*pais*","*continente*"]
     
     if not pregunta:
         print("No se ingresó ninguna pregunta")
+        return False
+    elif not any(marcador in pregunta for marcador in marcadores):
+        print("Para poder registrar la pregunta, ésta debe contener uno de los siguientes marcadores: *capital* o *pais*")
         return False
     elif funciones.eliminar_acentos(pregunta) in funciones.preguntas:
         print("Disculpe, esa pregunta ya está registrada")
@@ -31,11 +35,14 @@ def validar_pregunta(pregunta):
     return True
 
 def validar_respuesta(respuesta):
+    marcadores = ["*capital*","*pais*","*continente*"]
     
     if not respuesta:
         print("No se ingresó ninguna pregunta")
         return False
-    
+    elif not any(marcador in respuesta for marcador in marcadores):
+        print("Para poder registrar la respuesta, ésta debe contener uno o más de los siguientes marcadores: *capital*, *pais* o *continente*")
+        return False
     return True
 
 def agregar_pais():
@@ -61,13 +68,17 @@ def agregar_pais():
 def agregar_pregunta():
     print("--------------------------------")
     
-    print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *capital* o *continente*')
-    print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
+    print("Ingrese una pregunta sobre un pais o capital usando *pais*, *capital* como marcadores.")
+    print('Ejemplo: "¿En qué continente queda *pais*?".')
 
     preg = funciones.pedir_dato("Pregunta: ", validar_pregunta)
 
     print("--------------------------------")
 
+    
+    print("Ingrese una respuesta a la pregunta usando *pais*, *capital*, o *continente* como marcadores.")
+    print('Ejemplo: "*pais* está en *continente*".')
+    
     resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', validar_respuesta)
 
     print("--------------------------------")
