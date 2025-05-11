@@ -21,7 +21,7 @@ with open("preguntas.txt", "r", encoding="utf-8") as file:
             preguntas = re.findall(r"\((.*?)\)", linea)
             
             # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
-            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*ciudad*",r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
+            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
         
 
 #-------------------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ def reemplazar_datos(respuesta, datos):
 
 def pedir_dato(mensaje_input, validacion_de_dato):
     while True:
-        dato = input(mensaje_input).strip()
+        dato = eliminar_acentos(input(mensaje_input).strip())
         if validacion_de_dato(dato):
             return dato.capitalize()
         print("--------------------------------")
@@ -116,7 +116,7 @@ def agregar_pais():
 def agregar_pregunta():
     print("--------------------------------")
     
-    print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *ciudad* o *continente*')
+    print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *capital* o *continente*')
     print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
     
     preg = eliminar_acentos(input("Pregunta: "))
@@ -141,9 +141,35 @@ def agregar_pregunta():
 # COMIENZO DEL FLUJO DEL PROGRAMA
 
 # Se podria arrancar primero preguntando si lo que quiere el usuario es registrar algo o hacer la pregunta
-while True:
-    pregunta = eliminar_acentos(input("Ingrese su pregunta: "))
+ejecutar = True
+while ejecutar:
     
+       
+    while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
+            
+        print("Por favor, ingrese una de las siguientes opciones: ")
+        print("1 - Agregar pregunta")
+        print("2 - Registrar país") 
+        print("3 - Realizar una pregunta ")
+        print('4 - Salir\n')
+        opcion = eliminar_acentos(input(""))
+        if opcion == '1':
+            agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
+        elif opcion == '2':
+            agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
+        elif opcion == "3":
+            pregunta = eliminar_acentos(input("Ingrese su pregunta: "))
+            break
+        elif opcion == '4':
+            ejecutar = False
+            break
+        else:
+            print("--------------------------------")
+            print('Opción invalida')
+            print("--------------------------------")
+
+    if not ejecutar:
+        break
     if not pregunta:
         print("Por favor ingrese una pregunta")
         continue
@@ -170,22 +196,6 @@ while True:
         print("--------------------------------") # Estas lineas divisorias son para mejor claridad en la consola
         print("Disculpe, no entendí su pregunta")
         print("--------------------------------")
-        while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
-            
-            print("Por favor, ingrese una de las siguientes opciones: ")
-            print("1 - Agregar pregunta")
-            print("2 - Registrar país") 
-            print("3 - Realizar una pregunta \n")
-            opcion = eliminar_acentos(input(""))
-            if opcion == '1':
-                agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
-            elif opcion == '2':
-                agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
-            elif opcion == "3":
-                break
-            else:
-                print("--------------------------------")
-                print('Opción invalida')
-                print("--------------------------------")
+     
         
 print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
