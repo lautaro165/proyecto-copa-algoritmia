@@ -50,7 +50,7 @@ def agregar_pais():
     while True:
         print("--------------------------------")
         pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
-        ciudad = funciones.pedir_dato('Ingrese el nombre de la ciudad: ', funciones.validar_capital)
+        capital = funciones.pedir_dato('Ingrese el nombre de la capital: ', funciones.validar_capital)
         continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
         
         for i, linea in enumerate(archivo):
