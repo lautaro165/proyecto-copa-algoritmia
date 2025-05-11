@@ -5,23 +5,27 @@ import unicodedata
 
 #FALTA OPTIMIZAR BIEN EL TEMA DE APERTURAS INNECESARIAS DEL ARCHIVO (Lo hago yo)
 
-# -------------------------------------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------------------------------------
 
 # APERTURA DEL ARCHIVO PARA SU POSTERIOR LECTURA/ESCRITURA
-with open("preguntas.txt", "r", encoding="utf-8") as file:
-    lineas = file.readlines()
-    for linea in lineas:
-        if linea.startswith("paises: "):
-            paises_data = re.findall(r"\((.*?)\)", linea)
-            
-            # Lista de tuplas con los datos de los paises que se van a usar en el programa
-            paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
-        elif linea.startswith("Preguntas: "):
-            # Se sacan las preguntas de las lineas por el contenido dentro de los paréntesis
-            preguntas = re.findall(r"\((.*?)\)", linea)
-            
-            # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
-            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
+def cargar_datos():
+    
+    global paises_data, preguntas, preguntas_patrones
+    
+    with open("preguntas.txt", "r", encoding="utf-8") as file:
+        lineas = file.readlines()
+        for linea in lineas:
+            if linea.startswith("paises: "):
+                paises_data = re.findall(r"\((.*?)\)", linea)
+                
+                # Lista de tuplas con los datos de los paises que se van a usar en el programa
+                paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
+            elif linea.startswith("Preguntas: "):
+                # Se sacan las preguntas de las lineas por el contenido dentro de los paréntesis
+                preguntas = re.findall(r"\((.*?)\)", linea)
+                
+                # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
+                preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
         
 
 #-------------------------------------------------------------------------------------------------------------
@@ -119,6 +123,7 @@ def agregar_pais():
         print("\nPais agregado exitosamente")
         print("--------------------------------")
         
+        cargar_datos()
         break
 
 def agregar_pregunta():
@@ -144,6 +149,7 @@ def agregar_pregunta():
     escribir_archivo(archivo)
     print('Pregunta registrada exitosamente!')
     print("--------------------------------")
+    cargar_datos()
     
 
 def realizar_pregunta():
@@ -209,7 +215,9 @@ def realizar_pregunta():
 # Se podria arrancar primero preguntando si lo que quiere el usuario es registrar algo o hacer la pregunta
 
 while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
-            
+    
+    cargar_datos()
+    
     print("Por favor, ingrese una de las siguientes opciones: ")
     print("1 - Agregar pregunta")
     print("2 - Registrar país") 
