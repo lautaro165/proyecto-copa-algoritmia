@@ -46,7 +46,7 @@ def reemplazar_datos(respuesta, datos):
 
 def pedir_dato(mensaje_input, validacion_de_dato):
     while True:
-        dato = eliminar_acentos(input(mensaje_input).strip())
+        dato = input(mensaje_input).strip()
         if validacion_de_dato(dato):
             return dato.capitalize()
         print("--------------------------------")
