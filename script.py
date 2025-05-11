@@ -1,85 +1,5 @@
 import re
-import unicodedata
-# print("Buenas! Soy un chat bot especializado en geografía.")
-
-#-------------------------------------------------------------------------------------------------------------
-
-# CARGA DE LOS DATOS DEL ARCHIVO
-def cargar_datos():
-    
-    global paises_data, preguntas, preguntas_patrones
-    
-    with open("preguntas.txt", "r", encoding="utf-8") as file:
-        lineas = file.readlines()
-        for linea in lineas:
-            if linea.startswith("paises: "):
-                paises_data = re.findall(r"\((.*?)\)", linea)
-                
-                # Lista de tuplas con los datos de los paises que se van a usar en el programa
-                paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
-            elif linea.startswith("Preguntas: "):
-                # Se sacan las preguntas de las lineas por el contenido dentro de los paréntesis
-                preguntas = re.findall(r"\((.*?)\)", linea)
-                
-                # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
-                preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
-        
-
-#-------------------------------------------------------------------------------------------------------------
-
-# FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
-
-def eliminar_acentos(texto):
-    texto_sin_acento = ""
-    for char in texto: 
-        if char.lower() == "ñ":
-            texto_sin_acento += char
-        else:
-            char_normalizado = unicodedata.normalize("NFD",char)
-            char_sin_acento = "".join(c for c in char_normalizado if not unicodedata.combining(c))
-            
-            texto_sin_acento += char_sin_acento
-    return texto_sin_acento
-
-def leer_archivo():
-    with open("preguntas.txt","r",encoding="utf-8") as file:
-        return file.readlines()
-    
-def escribir_archivo(archivo_actualizado):
-    with open("preguntas.txt","w", encoding="utf-8") as file:
-        file.writelines(archivo_actualizado)
-        
-def reemplazar_datos(respuesta, datos):
-    return respuesta.replace("*pais*",datos[0]).replace("*capital*",datos[1]).replace("*continente*",datos[2])
-
-def pedir_dato(mensaje_input, validacion_de_dato):
-    while True:
-        dato = input(mensaje_input).strip()
-        if validacion_de_dato(dato):
-            return dato.capitalize()
-        print("--------------------------------")
-        
-def validar_pais(nombre):
-    paises_registrados = [eliminar_acentos(p[0].lower()) for p in paises_data]
-
-    if not nombre:
-        print("No se ingresó el nombre de ningún país")
-    elif eliminar_acentos(nombre.lower()) in paises_registrados:
-        print(f"{nombre.capitalize()} ya está registrado")
-        return False
-
-    return bool(nombre)
-
-def validar_capital(nombre):
-    if not nombre:
-        print(f"Se debe ingresar la capital del pais para poder registrarlo")
-    return bool(nombre)
-
-def validar_continente(nombre):
-    if not nombre:
-        print(f"Se debe ingresar la capital de {nombre.capitalize()} para poder registrarlo")
-    return bool(nombre)
-#-------------------------------------------------------------------------------------------------------------
+from funciones import paises_data, preguntas, preguntas_patrones, leer_archivo, pedir_dato, eliminar_acentos, cargar_datos, validar_capital, validar_continente, validar_pais,escribir_archivo, reemplazar_datos
 
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
@@ -153,6 +73,7 @@ def agregar_pregunta():
 def realizar_pregunta():
     while True:
         pregunta = eliminar_acentos(input("Ingrese su pregunta: ")).replace("¿","").replace("?","")
+        
         if not pregunta:
             print("Por favor ingrese una pregunta")
             print("--------------------------------")
@@ -179,19 +100,19 @@ def realizar_pregunta():
             print("--------------------------------")
             print("Disculpe, no entendí su pregunta")
             while True:
-                print("Digame si desea reformularla o registrarla?")
+                print("Digame si desea:")
+                print("1 - Reformularla")
+                print("2 - Registrarla")
                 decision = input("")
                 print("--------------------------------")
-                if not any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla","reformular","reformularla"]): # Opciones validas que puede escribir el usuario
-                    
-                    print("Disculpe, no le entendí")
+                if not decision in ["1", "2"]: # Opciones validas que puede escribir el usuario
+                    print("Disculpe, no se ingresó una opción valida")
                     print("--------------------------------")
                     continue
-                elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla"]):
-                    agregar_pregunta()
+                elif decision == "1":
                     break
-                elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["reformular","reformularla"]):
-                    
+                elif decision == "2":
+                    agregar_pregunta()
                     break
                 else:
                     break
@@ -202,7 +123,7 @@ def realizar_pregunta():
             print("--------------------------------")
             continue
         
-        print("¿Desea realizar otra pregunta?")
+        print("¿Tiene alguna otra pregunta? En caso de que no, solamente escriba 'salir'")
             
         
 
@@ -223,10 +144,10 @@ while True: # Bucle creado para que reitere las opciones si lo ingresado no es v
     print('4 - Salir\n')
     opcion = eliminar_acentos(input(""))
     if opcion == '1':
-        agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
+        agregar_pregunta()
     elif opcion == '2':
         print("--------------------------------")
-        agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
+        agregar_pais()
     elif opcion == "3":
         print("--------------------------------")
         realizar_pregunta()
