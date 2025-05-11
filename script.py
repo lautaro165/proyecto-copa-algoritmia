@@ -29,8 +29,15 @@ with open("preguntas.txt", "r", encoding="utf-8") as file:
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
 def eliminar_acentos(texto):
-    texto_normalizado = unicodedata.normalize("NFD",texto)
-    texto_sin_acento = "".join(char for char in texto_normalizado if not unicodedata.combining(char) or char == "ñ") # Se filtran todos los caracteres diacriticos del texto normalizado menos en el caso de la letra "ñ"
+    texto_sin_acento = ""
+    for char in texto: 
+        if char.lower() == "ñ":
+            texto_sin_acento += char
+        else:
+            char_normalizado = unicodedata.normalize("NFD",char)
+            char_sin_acento = "".join(c for c in char_normalizado if not unicodedata.combining(c))
+            
+            texto_sin_acento += char_sin_acento
     return texto_sin_acento
 
 def leer_archivo():
@@ -135,6 +142,8 @@ def agregar_pregunta():
             break
     escribir_archivo(archivo)
     print('Pregunta registrada exitosamente!')
+    print("--------------------------------")
+    
 
 def realizar_pregunta():
     while True:
@@ -161,7 +170,7 @@ def realizar_pregunta():
             print("--------------------------------")
             print("Disculpe, no entendí su pregunta")
             while True:
-                print("¿Desea reformularla o registrarla?")
+                print("Digame si desea reformularla o registrarla?")
                 decision = input("")
                 print("--------------------------------")
                 if not any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla","reformular","reformularla"]): # Opciones validas que puede escribir el usuario
@@ -171,27 +180,25 @@ def realizar_pregunta():
                     continue
                 elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla"]):
                     #AGREGAR LOGICA PARA REGISTRARLA
+                    agregar_pregunta()
                     
-                    continue
+                    break
                 elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["reformular","reformularla"]):
                     #AGREGAR LOGICA PARA REFORMULARLA
                     
-                    
-                    continue
+                    break
                 else:
                     break
-            continue
-                    
-                    
-            
+            continue    
         elif pais_indice is None:
             print("--------------------------------")
             print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
             print("--------------------------------")
             continue
         
+        print("¿Desea realizar otra pregunta?")
             
-        break
+        
 
 #-------------------------------------------------------------------------------------------------------------
 
