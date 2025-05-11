@@ -4,12 +4,14 @@ print("¡Hola! Soy tu chatbot de confianza para responder preguntas de geografí
 print("--------------------------------")
 #-------------------------------------------------------------------------------------------------------------
 
-# CARGA DE LOS DATOS DEL ARCHIVO
-paises_data = []
-preguntas = []
+paises_data = [] 
+preguntas = [] 
 preguntas_patrones = []
+# -------------------------------------------------------------
 def cargar_datos():
-    
+    """
+    Función encargada de abrir el archivo y de asignar a las variables globales sus datos correspondientes
+    """
     global paises_data, preguntas, preguntas_patrones
     
     with open("preguntas.txt", "r", encoding="utf-8") as file:
@@ -34,6 +36,12 @@ cargar_datos()
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
 def eliminar_acentos(texto):
+    
+    """
+    Función encargada de eliminar los acentos y caracteres especiales del texto excepto la letra 'ñ'.
+    Convierte caracteres acentuados a su versión base (e.g., 'é' se convierte a 'e').
+    """
+    
     texto_sin_acento = ""
     for char in texto: 
         if char.lower() == "ñ":
@@ -46,24 +54,46 @@ def eliminar_acentos(texto):
     return texto_sin_acento
 
 def leer_archivo():
+    """
+    Función encargada de leer el archivo 'preguntas.txt' y devolver una lista de líneas
+    para poder usar los datos de interes
+    """
     with open("preguntas.txt","r",encoding="utf-8") as file:
         return file.readlines()
     
 def escribir_archivo(archivo_actualizado):
+    """
+    Función encargada de escribir el archivo de preguntas con las lineas del archivo 
+    que recibe como parametro
+    """
     with open("preguntas.txt","w", encoding="utf-8") as file:
         file.writelines(archivo_actualizado)
         
 def reemplazar_datos(respuesta, datos):
+    """
+    Función encargada de reemplazar los marcadores en la respuesta por los datos correspondientes
+    del pais, capital o continente de la respuesta final a una pregunta del usuario
+    """
     return respuesta.replace("*pais*",datos[0]).replace("*capital*",datos[1]).replace("*continente*",datos[2])
 
 def pedir_dato(mensaje_input, validacion_de_dato):
+    """
+    Función encargada de predir y procesar un dato y validarlo con la funcion 
+    que se le pase como segundo parametro. En caso de no ser valido, se pide el
+    dato nuevamente, en caso de ser valido, se retorna el dato 
+    """
     while True:
         dato = input(mensaje_input).strip()
         if validacion_de_dato(dato):
             return dato.capitalize()
         print("--------------------------------")
-        
+
+# FUNCIONES DE VALIDACION
+
 def validar_pais(nombre):
+    """
+    La función busca que el pais que se haya ingresado no esté ya registrado
+    """
     paises_registrados = [eliminar_acentos(p[0].lower()) for p in paises_data]
 
     if not nombre:
@@ -75,11 +105,17 @@ def validar_pais(nombre):
     return bool(nombre)
 
 def validar_capital(nombre):
+    """
+    Solamente se valida no se envíe un string vacio como dato
+    """
     if not nombre:
         print(f"Se debe ingresar la capital del pais para poder registrarlo")
     return bool(nombre)
 
 def validar_continente(nombre):
+    """
+    Se verifica que el continente ingresado exista
+    """
     nombre_sin_acentos = eliminar_acentos(nombre.lower())
     if not nombre:
         print(f"Se debe ingresar el continente de {nombre.capitalize()} para poder registrarlo")
