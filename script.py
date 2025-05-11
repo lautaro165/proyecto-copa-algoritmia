@@ -129,12 +129,23 @@ def agregar_pregunta():
     
     print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *capital* o *continente*')
     print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
+    #validacion pregunta 
+
+    while True:
+        preg = eliminar_acentos(input("Pregunta: ")).strip()
+        if preg and ('*pais*' in preg or '*capital*' in preg or '*continente*' in preg):
+            break
+        print('pregunta invalida, asegurese de usar *capital*, *pais* o *continente y no dejar un espacio en blanco*')
     
-    preg = eliminar_acentos(input("Pregunta: "))
     
     print("--------------------------------")
     
-    resp = eliminar_acentos(input('Ahora, ingrese la respuesta: ')) 
+    while True:
+        resp = eliminar_acentos(input('Ahora, ingrese la respuesta: ')).strip() 
+        if resp and ('*pais*' in resp or '*capital*' in resp or '*continente*' in resp):
+            break
+        print('respuesta invalida, asegurese de usar *capital*, *pais* o *continente y no dejar un espacio en blanco*')
+  
     
     print("--------------------------------")
     
@@ -158,7 +169,7 @@ def realizar_pregunta():
             print("--------------------------------")
             continue
         
-        if pregunta.lower().strip() == "salir":
+        if pregunta.lower().strip() == "salir" or pregunta.lower().strip() == "no":
             break
         
         pregunta_indice = encontrar_pregunta(pregunta)
