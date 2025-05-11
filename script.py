@@ -14,6 +14,7 @@ with open("preguntas.txt", "r", encoding="utf-8") as file:
         if linea.startswith("paises: "):
             paises_data = re.findall(r"\((.*?)\)", linea)
             
+            # Lista de tuplas con los datos de los paises que se van a usar en el programa
             paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
         elif linea.startswith("Preguntas: "):
             # Se sacan las preguntas de las lineas por el contenido dentro de los paréntesis
@@ -41,22 +42,24 @@ def escribir_archivo(archivo_actualizado):
         file.writelines(archivo_actualizado)
         
 def reemplazar_datos(respuesta, datos):
-    return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
+    return respuesta.replace("*pais*",datos[0]).replace("*capital*",datos[1]).replace("*continente*",datos[2])
 
 def pedir_dato(mensaje_input, validacion_de_dato):
     while True:
         dato = input(mensaje_input).strip()
         if validacion_de_dato(dato):
-            return dato
-        print("Dato invalido")
+            return dato.capitalize()
+        print("--------------------------------")
         
 def validar_pais(nombre):
+    paises_registrados = [eliminar_acentos(p[0].lower()) for p in paises_data]
+
     if not nombre:
-        print("Se debe el ingresar un pais")
-    elif nombre.lower() in [p[0].lower() for p in paises_data]:
+        print("No se ingresó el nombre de ningún país")
+    elif eliminar_acentos(nombre.lower()) in paises_registrados:
         print(f"{nombre.capitalize()} ya está registrado")
         return False
-        
+
     return bool(nombre)
 
 def validar_capital(nombre):
@@ -94,32 +97,27 @@ def agregar_pais():
     #Verificar en cada uno que no se ingresen caracteres invalidos
     while True:
         print("--------------------------------")
-        pais = input('Ingrese el nombre de un pais para registrarlo: ').strip()
+        # pais = input('Ingrese el nombre de un pais para registrarlo: ').strip()
+        pais = pedir_dato('Ingrese el nombre de un pais para registrarlo: ', validar_pais)
+        ciudad = pedir_dato('Ingrese el nombre de la ciudad: ',validar_capital)
+        continente = pedir_dato(f'Ingrese el continente de {pais}: ', validar_continente)
         
-        ciudad = eliminar_acentos(input('Ingrese el nombre de la ciudad: ').strip())
-        
+        for i, linea in enumerate(archivo):
+            if linea.startswith("paises: "):
+                archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n"
+                break
             
-        
+        escribir_archivo(archivo)
+        print("\nPais agregado exitosamente")
         print("--------------------------------")
-    
-    
-    
-    # if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR), tambien hay que iterar para en cada dato para ver que no exista ya
-    #     for i, linea in enumerate(archivo):
-    #         if linea.startswith("paises:"):
-    #             archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n" 
-    #             break
-    #     escribir_archivo(archivo)
-    #     print("Pais registrado exitosamente")
-    # else:
-    #     print('Ese pais ya esta en el programa') #Podriamos poner el nombre del pais que ya existe en este mensaje
+        
+        break
 
 def agregar_pregunta():
     print("--------------------------------")
     
     print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *ciudad* o *continente*')
     print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
-    
     
     preg = eliminar_acentos(input("Pregunta: "))
     
@@ -164,6 +162,10 @@ while True:
         respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
         
         print(respuesta_final)
+    # elif pais_indice is None:
+    #     pass
+    # elif pregunta_indice is None:
+    #     pass
     else:
         print("--------------------------------") # Estas lineas divisorias son para mejor claridad en la consola
         print("Disculpe, no entendí su pregunta")
