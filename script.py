@@ -5,9 +5,31 @@ import unicodedata
 
 #FALTA OPTIMIZAR BIEN EL TEMA DE APERTURAS INNECESARIAS DEL ARCHIVO (Lo hago yo)
 
+# -------------------------------------------------------------------------------------------------------------
+
+# APERTURA DEL ARCHIVO PARA SU POSTERIOR LECTURA/ESCRITURA
+with open("preguntas.txt", "r", encoding="utf-8") as file:
+    lineas = file.readlines()
+    for linea in lineas:
+        if linea.startswith("paises: "):
+            paises_data = re.findall(r"\((.*?)\)", linea)
+            
+            paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
+        elif linea.startswith("Preguntas: "):
+            # Se sacan las preguntas de las lineas por el contenido dentro de los paréntesis
+            preguntas = re.findall(r"\((.*?)\)", linea)
+            
+            # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
+            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*ciudad*",r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
+        
+
+#-------------------------------------------------------------------------------------------------------------
+
+# FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
+
 def eliminar_acentos(texto):
     texto_normalizado = unicodedata.normalize("NFD",texto)
-    texto_sin_acento = "".join(char for char in texto_normalizado if not unicodedata.combining(char))
+    texto_sin_acento = "".join(char for char in texto_normalizado if not unicodedata.combining(char) or char == "ñ") # Se filtran todos los caracteres diacriticos del texto normalizado menos en el caso de la letra "ñ"
     return texto_sin_acento
 
 def leer_archivo():
@@ -17,21 +39,38 @@ def leer_archivo():
 def escribir_archivo(archivo_actualizado):
     with open("preguntas.txt","w", encoding="utf-8") as file:
         file.writelines(archivo_actualizado)
-
-with open("preguntas.txt", "r", encoding="utf-8") as file:
-    lineas = file.readlines()
-    for linea in lineas:
-        if linea.startswith("paises: "):
-            paises_data = re.findall(r"\((.*?)\)", linea)
-            
-            paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
-        elif linea.startswith("Preguntas: "):
-            # Se sacan las preguntas de las lineas por el contenido dentro de los parentesis
-            preguntas = re.findall(r"\((.*?)\)", linea)
-            
-            # Se crea una lista de expresiones regulares para buscar la pregunta mas adelante
-            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*ciudad*",r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
         
+def reemplazar_datos(respuesta, datos):
+    return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
+
+def pedir_dato(mensaje_input, validacion_de_dato):
+    while True:
+        dato = input(mensaje_input).strip()
+        if validacion_de_dato(dato):
+            return dato
+        print("Dato invalido")
+        
+def validar_pais(nombre):
+    if not nombre:
+        print("Se debe el ingresar un pais")
+    elif nombre.lower() in [p[0].lower() for p in paises_data]:
+        print(f"{nombre.capitalize()} ya está registrado")
+        return False
+        
+    return bool(nombre)
+
+def validar_capital(nombre):
+    if not nombre:
+        print(f"Se debe ingresar la capital del pais para poder registrarlo")
+    return bool(nombre)
+
+def validar_continente(nombre):
+    if not nombre:
+        print(f"Se debe ingresar la capital de {nombre.capitalize()} para poder registrarlo")
+    return bool(nombre)
+#-------------------------------------------------------------------------------------------------------------
+
+#FUNCIONES PRINCIPALES DEL PROGRAMA
 
 def encontrar_pais(pregunta):
     for i, dato in enumerate(paises_data):
@@ -49,26 +88,31 @@ def encontrar_pregunta(pregunta):
             return i
     return None
 
-def reemplazar_datos(respuesta, datos):
-    return respuesta.replace("*pais*",datos[0]).replace("*ciudad*",datos[1]).replace("*continente*",datos[2])
 
 def agregar_pais():
     archivo = leer_archivo()
+    #Verificar en cada uno que no se ingresen caracteres invalidos
+    while True:
+        print("--------------------------------")
+        pais = input('Ingrese el nombre de un pais para registrarlo: ').strip()
+        
+        ciudad = eliminar_acentos(input('Ingrese el nombre de la ciudad: ').strip())
+        
+            
+        
+        print("--------------------------------")
     
-    print("--------------------------------")
-    pais = eliminar_acentos(input('Ingrese el nombre del pais ').strip())
-    ciudad = eliminar_acentos(input('Ingrese el nombre de la ciudad ').strip())
-    continente = eliminar_acentos(input('Ingrese el continente ').strip())
-    print("--------------------------------")
-    if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR), tambien hay que iterar para en cada dato para ver que no exista ya
-        for i, linea in enumerate(archivo):
-            if linea.startswith("paises:"):
-                archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n" 
-                break
-        escribir_archivo(archivo)
-        print("Pais registrado exitosamente")
-    else:
-        print('Ese pais ya esta en el programa') #Podriamos poner el nombre del pais que ya existe en este mensaje
+    
+    
+    # if (pais, ciudad, continente) not in paises_data: # Sensible a mayusculas y minusculas (CORREGIR), tambien hay que iterar para en cada dato para ver que no exista ya
+    #     for i, linea in enumerate(archivo):
+    #         if linea.startswith("paises:"):
+    #             archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n" 
+    #             break
+    #     escribir_archivo(archivo)
+    #     print("Pais registrado exitosamente")
+    # else:
+    #     print('Ese pais ya esta en el programa') #Podriamos poner el nombre del pais que ya existe en este mensaje
 
 def agregar_pregunta():
     print("--------------------------------")
@@ -94,6 +138,9 @@ def agregar_pregunta():
     escribir_archivo(archivo)
     print('Pregunta registrada exitosamente!')
 
+#-------------------------------------------------------------------------------------------------------------
+
+# COMIENZO DEL FLUJO DEL PROGRAMA
 
 # Se podria arrancar primero preguntando si lo que quiere el usuario es registrar algo o hacer la pregunta
 while True:
@@ -117,10 +164,6 @@ while True:
         respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
         
         print(respuesta_final)
-    elif pregunta_indice is None:
-        pass
-    elif pais_indice is None:
-        pass
     else:
         print("--------------------------------") # Estas lineas divisorias son para mejor claridad en la consola
         print("Disculpe, no entendí su pregunta")
