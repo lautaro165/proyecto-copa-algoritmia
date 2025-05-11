@@ -21,7 +21,7 @@ with open("preguntas.txt", "r", encoding="utf-8") as file:
             preguntas = re.findall(r"\((.*?)\)", linea)
             
             # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
-            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
+            preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
         
 
 #-------------------------------------------------------------------------------------------------------------
@@ -91,6 +91,7 @@ def encontrar_pais(pregunta):
     return None
 
 def encontrar_pregunta(pregunta):
+    
     for i, pregunta_patron in enumerate(preguntas_patrones):
         # Se busca la expresion creada que coincida de principio a fin con la pregunta ingresada por el usuario
         if re.fullmatch(pregunta_patron.split(", ")[0].lower(), pregunta.lower()):
@@ -150,6 +151,7 @@ def realizar_pregunta():
         pregunta = eliminar_acentos(input("Ingrese su pregunta: ")).replace("¿","").replace("?","")
         if not pregunta:
             print("Por favor ingrese una pregunta")
+            print("--------------------------------")
             continue
         
         if pregunta.lower().strip() == "salir":
@@ -165,7 +167,10 @@ def realizar_pregunta():
             
             respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
             
+            print("--------------------------------")
             print(respuesta_final)
+            print("--------------------------------")
+            
         elif pregunta_indice is None:
             print("--------------------------------")
             print("Disculpe, no entendí su pregunta")
@@ -179,12 +184,9 @@ def realizar_pregunta():
                     print("--------------------------------")
                     continue
                 elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla"]):
-                    #AGREGAR LOGICA PARA REGISTRARLA
                     agregar_pregunta()
-                    
                     break
                 elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["reformular","reformularla"]):
-                    #AGREGAR LOGICA PARA REFORMULARLA
                     
                     break
                 else:

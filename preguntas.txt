@@ -6,4 +6,4 @@ paises: (Argentina, Buenos Aires, Sudamerica), (España, Madrid, Europa), (Alema
 
 FORMATO DE PREGUNTAS: (Pregunta, Respuesta)
 
-Preguntas: (En que continente queda *pais*, *pais* queda en *continente*), (Donde queda *pais*, *pais* queda en *continente*), (En que pais queda *ciudad*, *ciudad* queda en *pais*), (Cual es la capital de *pais*, la capital de *pais* es *capital*)
+Preguntas: (En que continente queda *pais*, *pais* queda en *continente*), (Donde queda *pais*, *pais* queda en *continente*), (En que pais queda *capital*, *capital* queda en *pais*), (Cual es la capital de *pais*, la capital de *pais* es *capital*)
