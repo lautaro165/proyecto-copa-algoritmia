@@ -102,18 +102,23 @@ def encontrar_pregunta(pregunta):
 
 
 def agregar_pais():
-    archivo = leer_archivo()
+    
     #Verificar en cada uno que no se ingresen caracteres invalidos
     while True:
         print("--------------------------------")
         # pais = input('Ingrese el nombre de un pais para registrarlo: ').strip()
         pais = pedir_dato('Ingrese el nombre de un pais para registrarlo: ', validar_pais)
-        ciudad = pedir_dato('Ingrese el nombre de la ciudad: ',validar_capital)
+        capital = pedir_dato('Ingrese el nombre de la ciudad: ',validar_capital)
         continente = pedir_dato(f'Ingrese el continente de {pais}: ', validar_continente)
+        while True:
+            if re.search(r'\d', pais) or re.search(r'\d', capital) or re.search(r'\d', continente):
+                break
+
+        archivo = leer_archivo()
         
         for i, linea in enumerate(archivo):
             if linea.startswith("paises: "):
-                archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n"
+                archivo[i] = f"{linea.strip()}, ({pais}, {capital}, {continente})\n"
                 break
             
         escribir_archivo(archivo)
@@ -234,7 +239,7 @@ while True: # Bucle creado para que reitere las opciones si lo ingresado no es v
     print('4 - Salir\n')
     opcion = eliminar_acentos(input(""))
     if opcion == '1':
-        agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
+        agregar_pregunta() 
     elif opcion == '2':
         print("--------------------------------")
         agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
