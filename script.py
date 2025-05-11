@@ -136,66 +136,92 @@ def agregar_pregunta():
     escribir_archivo(archivo)
     print('Pregunta registrada exitosamente!')
 
+def realizar_pregunta():
+    while True:
+        pregunta = eliminar_acentos(input("Ingrese su pregunta: ")).replace("¿","").replace("?","")
+        if not pregunta:
+            print("Por favor ingrese una pregunta")
+            continue
+        
+        if pregunta.lower().strip() == "salir":
+            break
+        
+        pregunta_indice = encontrar_pregunta(pregunta)
+        pais_indice = encontrar_pais(pregunta)
+        
+        # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
+        if pregunta_indice is not None and pais_indice is not None:
+            pais_data = paises_data[pais_indice]
+            respuesta_obtenida = preguntas[pregunta_indice].split(", ")[1].strip()
+            
+            respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
+            
+            print(respuesta_final)
+        elif pregunta_indice is None:
+            print("--------------------------------")
+            print("Disculpe, no entendí su pregunta")
+            while True:
+                print("¿Desea reformularla o registrarla?")
+                decision = input("")
+                print("--------------------------------")
+                if not any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla","reformular","reformularla"]): # Opciones validas que puede escribir el usuario
+                    
+                    print("Disculpe, no le entendí")
+                    print("--------------------------------")
+                    continue
+                elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["registrar","registrarla"]):
+                    #AGREGAR LOGICA PARA REGISTRARLA
+                    
+                    continue
+                elif any(opcion in eliminar_acentos(decision.lower()) for opcion in ["reformular","reformularla"]):
+                    #AGREGAR LOGICA PARA REFORMULARLA
+                    
+                    
+                    continue
+                else:
+                    break
+            continue
+                    
+                    
+            
+        elif pais_indice is None:
+            print("--------------------------------")
+            print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
+            print("--------------------------------")
+            continue
+        
+            
+        break
+
 #-------------------------------------------------------------------------------------------------------------
 
 # COMIENZO DEL FLUJO DEL PROGRAMA
 
 # Se podria arrancar primero preguntando si lo que quiere el usuario es registrar algo o hacer la pregunta
-ejecutar = True
-while ejecutar:
-    
-       
-    while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
-            
-        print("Por favor, ingrese una de las siguientes opciones: ")
-        print("1 - Agregar pregunta")
-        print("2 - Registrar país") 
-        print("3 - Realizar una pregunta ")
-        print('4 - Salir\n')
-        opcion = eliminar_acentos(input(""))
-        if opcion == '1':
-            agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
-        elif opcion == '2':
-            agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
-        elif opcion == "3":
-            pregunta = eliminar_acentos(input("Ingrese su pregunta: "))
-            break
-        elif opcion == '4':
-            ejecutar = False
-            break
-        else:
-            print("--------------------------------")
-            print('Opción invalida')
-            print("--------------------------------")
 
-    if not ejecutar:
-        break
-    if not pregunta:
-        print("Por favor ingrese una pregunta")
-        continue
-    
-    if pregunta.lower().strip() == "salir":
-        break
-    
-    pregunta_indice = encontrar_pregunta(pregunta)
-    pais_indice = encontrar_pais(pregunta)
-    
-    # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
-    if pregunta_indice is not None and pais_indice is not None:
-        pais_data = paises_data[pais_indice]
-        respuesta_obtenida = preguntas[pregunta_indice].split(", ")[1].strip()
-        
-        respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
-        
-        print(respuesta_final)
-    # elif pais_indice is None:
-    #     pass
-    # elif pregunta_indice is None:
-    #     pass
-    else:
-        print("--------------------------------") # Estas lineas divisorias son para mejor claridad en la consola
-        print("Disculpe, no entendí su pregunta")
+while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
+            
+    print("Por favor, ingrese una de las siguientes opciones: ")
+    print("1 - Agregar pregunta")
+    print("2 - Registrar país") 
+    print("3 - Realizar una pregunta ")
+    print('4 - Salir\n')
+    opcion = eliminar_acentos(input(""))
+    if opcion == '1':
+        agregar_pregunta() # No toma como error si se ingresan tanto pregunta como respuesta vacia (Hay que verificar que el usuario haya agregado algo valido y no un espacio vacio o que lo ingresado tenga caracteres invalidos como numeros)
+    elif opcion == '2':
         print("--------------------------------")
-     
-        
+        agregar_pais() # Mismo caso que en agregar_pregunta(), hay que agregar validaciones
+    elif opcion == "3":
+        print("--------------------------------")
+        realizar_pregunta()
+    elif opcion == '4':
+        break
+    else:
+        print("--------------------------------")
+        print("Opción invalida")
+        print("--------------------------------")     
+
+print("--------------------------------")
 print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
+print("--------------------------------")
