@@ -1,6 +1,5 @@
 import re
 import funciones
-# from funciones import paises_data, preguntas, preguntas_patrones, leer_archivo, pedir_dato, eliminar_acentos, cargar_datos, validar_capital, validar_continente, validar_pais, escribir_archivo, reemplazar_datos
 
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
@@ -59,23 +58,22 @@ def agregar_pais():
         funciones.cargar_datos()
         break
 
-#TERMINAR LAS VALIDACIONES NECESARIAS A ESTA FUNCION
 def agregar_pregunta():
     print("--------------------------------")
     
     print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *capital* o *continente*')
     print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
-    
-    preg = funciones.pedir_dato("Pregunta: ",validar_pregunta)
-    
+
+    preg = funciones.pedir_dato("Pregunta: ", validar_pregunta)
+
     print("--------------------------------")
-    
-    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ',validar_respuesta)
-    
+
+    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', validar_respuesta)
+
     print("--------------------------------")
-    
+
     archivo = funciones.leer_archivo()
-        
+
     for i, linea in enumerate(archivo):
         if linea.startswith("Preguntas:"):
             archivo[i] = f'{linea.strip()}, ({preg}, {resp})'
@@ -120,7 +118,7 @@ def realizar_pregunta():
                 print("Digame si desea:")
                 print("1 - Reformularla")
                 print("2 - Registrarla")
-                decision = input("")
+                decision = input("").strip()
                 print("--------------------------------")
                 if not decision in ["1", "2"]: # Opciones validas que puede escribir el usuario
                     print("Disculpe, no se ingresó una opción valida")
@@ -173,11 +171,10 @@ while True: # Bucle creado para que reitere las opciones si lo ingresado no es v
     print("2 - Registrar país") 
     print("3 - Realizar una pregunta ")
     print('4 - Salir\n')
-    opcion = funciones.eliminar_acentos(input(""))
+    opcion = funciones.eliminar_acentos(input("").strip())
     if opcion == '1':
         agregar_pregunta()
     elif opcion == '2':
-        print("--------------------------------")
         agregar_pais()
     elif opcion == "3":
         print("--------------------------------")

@@ -88,4 +88,4 @@ def validar_continente(nombre):
         print("Continente invalido")
         return False
     
-    return nombre
+    return nombre.capitalize()
