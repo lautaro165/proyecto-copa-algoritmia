@@ -50,7 +50,7 @@ def agregar_pais():
     while True:
         print("--------------------------------")
         pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
-        capital = funciones.pedir_dato('Ingrese el nombre de la capital: ', funciones.validar_capital)
+        capital = funciones.pedir_dato(f'Ingrese el nombre de la capital de {pais}: ', funciones.validar_capital)
         continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
         
         for i, linea in enumerate(archivo):
@@ -68,15 +68,14 @@ def agregar_pais():
 def agregar_pregunta():
     print("--------------------------------")
     
-    print("Ingrese una pregunta sobre un pais o capital usando *pais*, *capital* como marcadores.")
-    print('Ejemplo: "¿En qué continente queda *pais*?".')
+    print("Registre la pregunta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
+    print('Ejemplo: "¿En qué continente se encuentra pais?".')
 
     preg = funciones.pedir_dato("Pregunta: ", validar_pregunta)
 
     print("--------------------------------")
-
     
-    print("Ingrese una respuesta a la pregunta usando *pais*, *capital*, o *continente* como marcadores.")
+    print("Registre la respuesta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
     print('Ejemplo: "*pais* está en *continente*".')
     
     resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', validar_respuesta)
@@ -98,14 +97,15 @@ def agregar_pregunta():
 def realizar_pregunta():
     while True:
         
-        pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta: ")).replace("¿","").replace("?","")
+        pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta o 'salir' si desea realizar otra accion: ")).replace("¿","").replace("?","")
         
         if not pregunta:
-            print("Por favor ingrese una pregunta")
+            print("No se ingresó ninguna pregunta")
             print("--------------------------------")
             continue
         
         if pregunta.lower().strip() == "salir" or pregunta.lower().strip() == "no":
+            print("--------------------------------")
             break
         
         pregunta_indice = encontrar_pregunta(pregunta.lower())
@@ -177,7 +177,7 @@ while True: # Bucle creado para que reitere las opciones si lo ingresado no es v
     
     funciones.cargar_datos()
     
-    print("Por favor, ingrese una de las siguientes opciones: ")
+    print("Por favor, ingrese indique cual de las siguientes opciones desea realizar: ")
     print("1 - Agregar pregunta")
     print("2 - Registrar país") 
     print("3 - Realizar una pregunta ")

@@ -1,7 +1,7 @@
 import re
 import unicodedata
-# print("Buenas! Soy un chat bot especializado en geografía.")
-
+print("¡Hola! Soy tu chatbot de confianza para responder preguntas de geografía sobre la ubicación de países y sus capitales. Estoy aquí para ayudarte y espero poder complacerte con mis respuestas. ¡Estoy a la espera de tus preguntas!")
+print("--------------------------------")
 #-------------------------------------------------------------------------------------------------------------
 
 # CARGA DE LOS DATOS DEL ARCHIVO
@@ -84,7 +84,7 @@ def validar_continente(nombre):
     if not nombre:
         print(f"Se debe ingresar el continente de {nombre.capitalize()} para poder registrarlo")
         return False
-    elif not nombre_sin_acentos in ["america", "africa", "asia", "oceania"]:
+    elif not nombre_sin_acentos in ["america", "africa", "asia", "oceania", "sudamerica", "norteamerica"]:
         print("Continente invalido")
         return False
     
