@@ -1,10 +1,11 @@
 import re
-from funciones import paises_data, preguntas, preguntas_patrones, leer_archivo, pedir_dato, eliminar_acentos, cargar_datos, validar_capital, validar_continente, validar_pais,escribir_archivo, reemplazar_datos
+import funciones
+# from funciones import paises_data, preguntas, preguntas_patrones, leer_archivo, pedir_dato, eliminar_acentos, cargar_datos, validar_capital, validar_continente, validar_pais, escribir_archivo, reemplazar_datos
 
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
 def encontrar_pais(pregunta):
-    for i, dato in enumerate(paises_data):
+    for i, dato in enumerate(funciones.paises_data):
         #Verificar que o la ciudad o el pais estén en la pregunta
         if dato[0].lower() in pregunta.lower() or dato[1].lower() in pregunta.lower():
             # Retorno el indice de los datos del pais
@@ -12,35 +13,50 @@ def encontrar_pais(pregunta):
     return None
 
 def encontrar_pregunta(pregunta):
-    
-    for i, pregunta_patron in enumerate(preguntas_patrones):
+    for i, pregunta_patron in enumerate(funciones.preguntas_patrones):
         # Se busca la expresion creada que coincida de principio a fin con la pregunta ingresada por el usuario
         if re.fullmatch(pregunta_patron.split(", ")[0].lower(), pregunta.lower()):
             # Retorno el indice de la pregunta y su respuesta
             return i
     return None
 
+def validar_pregunta(pregunta):
+    
+    if not pregunta:
+        print("No se ingresó ninguna pregunta")
+        return False
+    elif funciones.eliminar_acentos(pregunta) in funciones.preguntas:
+        print("Disculpe, esa pregunta ya está registrada")
+        return False
+    
+    return True
+
+def validar_respuesta(respuesta):
+    
+    if not respuesta:
+        print("No se ingresó ninguna pregunta")
+        return False
+    
+    return True
 
 def agregar_pais():
-    archivo = leer_archivo()
-    #Verificar en cada uno que no se ingresen caracteres invalidos
+    archivo = funciones.leer_archivo()
     while True:
         print("--------------------------------")
-        # pais = input('Ingrese el nombre de un pais para registrarlo: ').strip()
-        pais = pedir_dato('Ingrese el nombre de un pais para registrarlo: ', validar_pais)
-        ciudad = pedir_dato('Ingrese el nombre de la ciudad: ',validar_capital)
-        continente = pedir_dato(f'Ingrese el continente de {pais}: ', validar_continente)
+        pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
+        ciudad = funciones.pedir_dato('Ingrese el nombre de la ciudad: ', funciones.validar_capital)
+        continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
         
         for i, linea in enumerate(archivo):
             if linea.startswith("paises: "):
                 archivo[i] = f"{linea.strip()}, ({pais}, {ciudad}, {continente})\n"
                 break
             
-        escribir_archivo(archivo)
+        funciones.escribir_archivo(archivo)
         print("\nPais agregado exitosamente")
         print("--------------------------------")
         
-        cargar_datos()
+        funciones.cargar_datos()
         break
 
 #TERMINAR LAS VALIDACIONES NECESARIAS A ESTA FUNCION
@@ -50,29 +66,30 @@ def agregar_pregunta():
     print('Ingrese la pregunta, y en el apartado donde iria el pais, la ciudad o el continente escriba *pais*, *capital* o *continente*')
     print('Ejemplo: en que continente queda *pais*, *pais* queda en *continente*') 
     
-    preg = eliminar_acentos(input("Pregunta: "))
+    preg = funciones.pedir_dato("Pregunta: ",validar_pregunta)
     
     print("--------------------------------")
     
-    resp = eliminar_acentos(input('Ahora, ingrese la respuesta: ')) 
+    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ',validar_respuesta)
     
     print("--------------------------------")
     
-    archivo = leer_archivo()
+    archivo = funciones.leer_archivo()
         
     for i, linea in enumerate(archivo):
         if linea.startswith("Preguntas:"):
             archivo[i] = f'{linea.strip()}, ({preg}, {resp})'
             break
-    escribir_archivo(archivo)
+    funciones.escribir_archivo(archivo)
     print('Pregunta registrada exitosamente!')
     print("--------------------------------")
-    cargar_datos()
+    funciones.cargar_datos()
     
 
 def realizar_pregunta():
     while True:
-        pregunta = eliminar_acentos(input("Ingrese su pregunta: ")).replace("¿","").replace("?","")
+        
+        pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta: ")).replace("¿","").replace("?","")
         
         if not pregunta:
             print("Por favor ingrese una pregunta")
@@ -87,10 +104,10 @@ def realizar_pregunta():
         
         # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
         if pregunta_indice is not None and pais_indice is not None:
-            pais_data = paises_data[pais_indice]
-            respuesta_obtenida = preguntas[pregunta_indice].split(", ")[1].strip()
+            pais_data = funciones.paises_data[pais_indice]
+            respuesta_obtenida = funciones.preguntas[pregunta_indice].split(", ")[1].strip()
             
-            respuesta_final = reemplazar_datos(respuesta_obtenida, pais_data)
+            respuesta_final = funciones.reemplazar_datos(respuesta_obtenida, pais_data)
             
             print("--------------------------------")
             print(respuesta_final)
@@ -120,8 +137,22 @@ def realizar_pregunta():
         elif pais_indice is None:
             print("--------------------------------")
             print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
+            while True:
+                print("1 - Sí")
+                print("2 - No")
+                decision = input("")
+                if not decision in ["1", "2"]:
+                    print("Opcion invalida")
+                    continue
+                break
+            if decision == "1":
+                agregar_pais()
+                break
+            if decision == "2":
+                print("--------------------------------")
+                continue
             print("--------------------------------")
-            continue
+            # continue
         
         print("¿Tiene alguna otra pregunta? En caso de que no, solamente escriba 'salir'")
             
@@ -135,14 +166,14 @@ def realizar_pregunta():
 
 while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
     
-    cargar_datos()
+    funciones.cargar_datos()
     
     print("Por favor, ingrese una de las siguientes opciones: ")
     print("1 - Agregar pregunta")
     print("2 - Registrar país") 
     print("3 - Realizar una pregunta ")
     print('4 - Salir\n')
-    opcion = eliminar_acentos(input(""))
+    opcion = funciones.eliminar_acentos(input(""))
     if opcion == '1':
         agregar_pregunta()
     elif opcion == '2':
