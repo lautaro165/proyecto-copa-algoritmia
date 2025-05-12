@@ -1,9 +1,9 @@
 FORMATOS DE LOS DATOS DE PAISES: (Nombre, Capital, Continente)
 
-paises: (Argentina, Buenos Aires, Sudamerica), (España, Madrid, Europa), (Alemania, Berlin, Europa), (Portugal, Lisboa, Europa), (Mongolia, Ulan bator, Asia)
+paises: (Argentina, Buenos Aires, América), (España, Madrid, Europa), (Alemania, Berlin, Europa), (Portugal, Lisboa, Europa), (Mongolia, Ulán bator, Asia), (China, Pekín, Asia), (Colombia, Bogotá, América), (Estados Unidos, Washington D.C., América), (Chile, Santiago de Chile, América), (Australia, Canberra, Oceanía), (Reino Unido, Londres, Europa)
 
 
 
 FORMATO DE PREGUNTAS: (Pregunta, Respuesta)
 
-Preguntas: (En que continente queda *pais*, *pais* queda en *continente*), (Donde queda *pais*, *pais* queda en *continente*), (En que pais queda *capital*, *capital* queda en *pais*), (Cual es la capital de *pais*, la capital de *pais* es *capital*), (Capital de *pais*, *capital*)
+Preguntas: (En que continente queda *pais*, *pais* queda en *continente*), (Donde queda *pais*, *pais* queda en *continente*), (En que pais queda *capital*, *capital* queda en *pais*), (Cual es la capital de *pais*, la capital de *pais* es *capital*), (Capital de *pais*, *capital*), (En que pais se encuentra *capital*, *capital* se encuentra en *pais*)
