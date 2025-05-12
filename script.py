@@ -13,7 +13,10 @@ def encontrar_pais(pregunta):
     
     for i, dato in enumerate(funciones.paises_data):
         #Verificar que o la ciudad o el pais estén en la pregunta
-        if dato[0].lower() in pregunta.lower() or dato[1].lower() in pregunta.lower():
+        nombre_pais = funciones.eliminar_acentos(dato[0].lower())
+        nombre_capital = funciones.eliminar_acentos(dato[1].lower())
+        
+        if nombre_pais in funciones.eliminar_acentos(pregunta.lower()) or nombre_capital in funciones.eliminar_acentos(pregunta.lower()):
             # Retorno el indice de los datos del pais
             return i
     return None
@@ -25,7 +28,7 @@ def encontrar_pregunta(pregunta):
     """
     for i, pregunta_patron in enumerate(funciones.preguntas_patrones):
         # Se busca la expresion creada que coincida de principio a fin con la pregunta ingresada por el usuario
-        if re.fullmatch(pregunta_patron.split(", ")[0].lower(), pregunta.lower()):
+        if re.fullmatch(funciones.eliminar_acentos(pregunta_patron.split(", ")[0].lower()), pregunta.lower()):
             # Retorno el indice de la pregunta y su respuesta
             return i
     return None
@@ -66,7 +69,7 @@ def agregar_pregunta():
     print("--------------------------------")
     
     print("Registre la pregunta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
-    print('Ejemplo: "¿En qué continente se encuentra pais?".')
+    print('Ejemplo: "¿En qué continente se encuentra *pais*?".')
 
     preg = funciones.pedir_dato("Pregunta: ", funciones.validar_pregunta)
 
