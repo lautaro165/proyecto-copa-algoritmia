@@ -4,6 +4,13 @@ import funciones
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
 def encontrar_pais(pregunta):
+    """
+    Función encargada de buscar los datos del pais que corresponda según
+    el nombre de país/capital que el usuario haya ingresado en la pregunta.
+    Si el pais está registrado, se devuelve su índice en la lista paises_data,
+    caso contrario, se retorna el valor None
+    """
+    
     for i, dato in enumerate(funciones.paises_data):
         #Verificar que o la ciudad o el pais estén en la pregunta
         if dato[0].lower() in pregunta.lower() or dato[1].lower() in pregunta.lower():
@@ -12,6 +19,10 @@ def encontrar_pais(pregunta):
     return None
 
 def encontrar_pregunta(pregunta):
+    """
+    Proceso similar al de la funcion encontrar_pais. Se busca que exista la pregunta
+    que el usuario ingresó
+    """
     for i, pregunta_patron in enumerate(funciones.preguntas_patrones):
         # Se busca la expresion creada que coincida de principio a fin con la pregunta ingresada por el usuario
         if re.fullmatch(pregunta_patron.split(", ")[0].lower(), pregunta.lower()):
@@ -19,33 +30,14 @@ def encontrar_pregunta(pregunta):
             return i
     return None
 
-def validar_pregunta(pregunta):
-    marcadores = ["*capital*","*pais*","*continente*"]
-    
-    if not pregunta:
-        print("No se ingresó ninguna pregunta")
-        return False
-    elif not any(marcador in pregunta for marcador in marcadores):
-        print("Para poder registrar la pregunta, ésta debe contener uno de los siguientes marcadores: *capital* o *pais* o *continente*")
-        return False
-    elif funciones.eliminar_acentos(pregunta) in funciones.preguntas:
-        print("Disculpe, esa pregunta ya está registrada")
-        return False
-    
-    return True
 
-def validar_respuesta(respuesta):
-    marcadores = ["*capital*","*pais*","*continente*"]
-    
-    if not respuesta:
-        print("No se ingresó ninguna pregunta")
-        return False
-    elif not any(marcador in respuesta for marcador in marcadores):
-        print("Para poder registrar la respuesta, ésta debe contener uno o más de los siguientes marcadores: *capital*, *pais* o *continente*")
-        return False
-    return True
 
 def agregar_pais():
+    """
+    Función encargada de pedir los datos necesarios para registrar un pais
+    con todos los procesos de validación necesarios y de actualizar el 
+    archivo en caso de que el proceso sea exitoso
+    """
     archivo = funciones.leer_archivo()
     while True:
         print("--------------------------------")
@@ -66,19 +58,24 @@ def agregar_pais():
         break
 
 def agregar_pregunta():
+    """
+    Función encargada de pedir los datos necesarios para registrar una pregunta
+    con todos los procesos de validación necesarios y de actualizar el 
+    archivo en caso de que el proceso sea exitoso
+    """
     print("--------------------------------")
     
     print("Registre la pregunta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
     print('Ejemplo: "¿En qué continente se encuentra pais?".')
 
-    preg = funciones.pedir_dato("Pregunta: ", validar_pregunta)
+    preg = funciones.pedir_dato("Pregunta: ", funciones.validar_pregunta)
 
     print("--------------------------------")
     
     print("Registre la respuesta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
     print('Ejemplo: "*pais* está en *continente*".')
     
-    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', validar_respuesta)
+    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', funciones.validar_respuesta)
 
     print("--------------------------------")
 
@@ -95,6 +92,10 @@ def agregar_pregunta():
     
 
 def realizar_pregunta():
+    """
+    Función encargada de procesar las preguntas ingresadas por el usuario, obteniendo los índices tanto
+    de la pregunta ingresada como del país sobre el que se hace la pregunta 
+    """
     while True:
         
         pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta o 'salir' si desea realizar otra accion: ")).replace("¿","").replace("?","")
@@ -111,8 +112,8 @@ def realizar_pregunta():
         pregunta_indice = encontrar_pregunta(pregunta.lower())
         pais_indice = encontrar_pais(pregunta.lower())
         
-        # Manejar bien el caso puntual donde o no se conozca el pais o se conozca la pregunta
-        if pregunta_indice is not None and pais_indice is not None:
+        
+        if pregunta_indice is not None and pais_indice is not None: # Caso donde tanto la pregunta como el pais están registrados
             pais_data = funciones.paises_data[pais_indice]
             respuesta_obtenida = funciones.preguntas[pregunta_indice].split(", ")[1].strip()
             
@@ -122,7 +123,7 @@ def realizar_pregunta():
             print(respuesta_final)
             print("--------------------------------")
             
-        elif pregunta_indice is None:
+        elif pregunta_indice is None: # Caso donde la pregunta no es encontrada
             print("--------------------------------")
             print("Disculpe, no entendí su pregunta")
             while True:
@@ -143,7 +144,7 @@ def realizar_pregunta():
                 else:
                     break
             continue    
-        elif pais_indice is None:
+        elif pais_indice is None: # Caso donde no se encuentran los datos del pais/capital sobre el que se preguntó
             print("--------------------------------")
             print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
             while True:
@@ -171,11 +172,9 @@ def realizar_pregunta():
 
 # COMIENZO DEL FLUJO DEL PROGRAMA
 
-# Se podria arrancar primero preguntando si lo que quiere el usuario es registrar algo o hacer la pregunta
-
 while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
     
-    funciones.cargar_datos()
+    funciones.cargar_datos() #Se recargan los datos para asegurarse de refrescar los datos de los paises y preguntas registradas
     
     print("Por favor, ingrese indique cual de las siguientes opciones desea realizar: ")
     print("1 - Agregar pregunta")

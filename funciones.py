@@ -11,6 +11,7 @@ preguntas_patrones = []
 def cargar_datos():
     """
     Función encargada de abrir el archivo y de asignar a las variables globales sus datos correspondientes
+    Se usa al arranque del programa y en cada proceso donde se modifique el archivo 'preguntas.txt'
     """
     global paises_data, preguntas, preguntas_patrones
     
@@ -125,3 +126,37 @@ def validar_continente(nombre):
         return False
     
     return nombre.capitalize()
+
+def validar_pregunta(pregunta):
+    """
+    Se verifica que el formato de la pregunta a registrar contenga
+    marcadores para poder crear una pregunta dinámica
+    """
+    marcadores = ["*capital*","*pais*"]
+    
+    if not pregunta:
+        print("No se ingresó ninguna pregunta")
+        return False
+    elif not any(marcador in pregunta for marcador in marcadores):
+        print("Para poder registrar la pregunta, ésta debe contener uno de los siguientes marcadores: *capital* o *pais* o *continente*")
+        return False
+    elif eliminar_acentos(pregunta) in preguntas:
+        print("Disculpe, esa pregunta ya está registrada")
+        return False
+    
+    return True
+
+def validar_respuesta(respuesta):
+    """
+    Se verifica que el formato de la respuesta a registrar contenga 
+    marcadores para poder crear una respuesta dinámica
+    """
+    marcadores = ["*capital*","*pais*","*continente*"]
+    
+    if not respuesta:
+        print("No se ingresó ninguna pregunta")
+        return False
+    elif not any(marcador in respuesta for marcador in marcadores):
+        print("Para poder registrar la respuesta, ésta debe contener uno o más de los siguientes marcadores: *capital*, *pais* o *continente*")
+        return False
+    return True
