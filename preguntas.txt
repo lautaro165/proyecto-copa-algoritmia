@@ -1,9 +1,10 @@
 FORMATOS DE LOS DATOS DE PAISES: (Nombre, Capital, Continente)
 
-paises: (Argentina, Buenos Aires, América), (España, Madrid, Europa), (Alemania, Berlin, Europa), (Portugal, Lisboa, Europa), (Mongolia, Ulán bator, Asia), (China, Pekín, Asia), (Colombia, Bogotá, América), (Estados Unidos, Washington D.C., América), (Chile, Santiago de Chile, América), (Australia, Canberra, Oceanía), (Reino Unido, Londres, Europa)
+paises: (Argentina, Buenos Aires, Sudamerica), (España, Madrid, Europa), (Alemania, Berlin, Europa), (Portugal, Lisboa, Europa),(Timor oriental, Dili, Oceania), (Brasil,Brasilia,Sudamerica), (Chile,Santiago,Sudamerica), (Uruguay,Montevideo,Sudamerica), (Paraguay,Asuncion,Sudamerica), (Bolivia,Sucre,Sudamerica), (Peru,Lima,Sudamerica), (Colombia,Bogota,Sudamerica), (Venezuela,Caracas,Sudamerica), (Ecuador,Quito,Sudamerica), (Mexico,Ciudad de Mexico,America del Norte), (Canada,Ottawa,America del Norte), (Estados Unidos,Washington D.C.,America del Norte), (Panama,Ciudad de Panama,America Central), (Costa Rica,San Jose,America Central), (Nicaragua,Managua,America Central), (Honduras,Tegucigalpa,America Central), (El Salvador,San Salvador,America Central), (Guatemala,Ciudad de Guatemala,America Central), (Cuba,La Habana,Caribe), (Jamaica,Kingston,Caribe), (Reino Unido,Londres,Europa), (Francia,Paris,Europa), (Italia,Roma,Europa), (Paises Bajos,Amsterdam,Europa), (Belgica,Bruselas,Europa), (Suiza,Berna,Europa), (Suecia,Estocolmo,Europa), (Noruega,Oslo,Europa), (Finlandia,Helsinki,Europa), (Rusia,Moscu,Europa), (China,Pekin,Asia), (Japon,Tokio,Asia), (Corea del Sur,Seul,Asia), (India,Nueva Delhi,Asia), (Australia,Canberra,Oceania), (Nueva Zelanda,Wellington,Oceania), (Fiyi,Suva,Oceania), (Samoa,Apia,Oceania), (Papua Nueva Guinea,Port Moresby,Oceania), (Filipinas,Manila,Asia)
 
-
+El tema es, todo esto es tomando en cuenta que la pregunta no existe, si el pais no existe ahi si podemos hacer como decis pero yo haria 
+estructura entera sobre eso
 
 FORMATO DE PREGUNTAS: (Pregunta, Respuesta)
 
-Preguntas: (En que continente queda *pais*, *pais* queda en *continente*), (Donde queda *pais*, *pais* queda en *continente*), (En que pais queda *capital*, *capital* queda en *pais*), (Cual es la capital de *pais*, la capital de *pais* es *capital*), (Capital de *pais*, *capital*), (En que pais se encuentra *capital*, *capital* se encuentra en *pais*)
+Preguntas: (En que continente queda *pais*, *pais* queda en *continente*), (Donde queda *pais*, *pais* queda en continente*), (En que pais queda *ciudad*, *ciudad* queda en *pais*), (Cual es la capital de *pais*, la capital de *pais* es *capital*)
