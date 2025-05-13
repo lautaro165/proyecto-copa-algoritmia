@@ -1,0 +1,16 @@
+{
+
+    "paises": [
+        {"pais": "Argentina", "capital": "Buenos Aires", "continente": "Sudamerica"},
+        {"pais": "Estados Unidos", "capital": "Washington DC", "continente": "Norteamerica"}
+
+
+
+    ],
+
+    "Preguntas": [
+        {"Pregunta": "En que continente queda {pais}", "Respuesta": "{pais} queda en {continente"}
+    ]
+
+
+}
