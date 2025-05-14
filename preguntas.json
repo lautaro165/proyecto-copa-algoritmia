@@ -1,16 +1,129 @@
 {
-
     "paises": [
-        {"pais": "Argentina", "capital": "Buenos Aires", "continente": "Sudamerica"},
-        {"pais": "Estados Unidos", "capital": "Washington DC", "continente": "Norteamerica"}
-
-
-
+        {
+            "pais": "Argentina",
+            "capital": "Buenos Aires",
+            "continente": "Sudamerica"
+        },
+        {
+            "pais": "Estados Unidos",
+            "capital": "Washington DC",
+            "continente": "Norteamerica"
+        },
+        {
+            "pais": "México",
+            "capital": "Ciudad de México",
+            "continente": "Norteamerica"
+        },
+        {
+            "pais": "Francia",
+            "capital": "París",
+            "continente": "Europa"
+        },
+        {
+            "pais": "Colombia",
+            "capital": "Bogotá",
+            "continente": "Sudamerica"
+        },
+        {
+            "pais": "Uruguay",
+            "capital": "Montevideo",
+            "continente": "Sudamerica"
+        },
+        {
+            "pais": "Paraguay",
+            "capital": "Asunción",
+            "continente": "Sudamerica"
+        },
+        {
+            "pais": "España",
+            "capital": "Madrid",
+            "continente": "Europa"
+        },
+        {
+            "pais": "Alemania",
+            "capital": "Berlín",
+            "continente": "Europa"
+        },
+        {
+            "pais": "Portugal",
+            "capital": "Lisboa",
+            "continente": "Europa"
+        },
+        {
+            "pais": "Timor oriental",
+            "capital": "Dili",
+            "continente": "Oceania"
+        },
+        {
+            "pais": "La India",
+            "capital": "Nueva Delhi",
+            "continente": "Asia"
+        },
+        {
+            "pais": "Nepal",
+            "capital": "Katmandú",
+            "continente": "Asia"
+        }
     ],
-
-    "Preguntas": [
-        {"Pregunta": "En que continente queda {pais}", "Respuesta": "{pais} queda en {continente"}
+    "preguntasSimples": [
+        {
+            "pregunta": "cual es el continente mas grande del mundo",
+            "respuesta": "El continente más grande del mundo es Asia"
+        },
+        {
+            "pregunta": "cual es el pais mas grande del mundo",
+            "respuesta": "El pais más grande del mundo por superficie es Rusia"
+        },
+        {
+            "pregunta": "que es la geografia",
+            "respuesta": "La geografía es la ciencia que estudia la superficie de la Tierra, sus características físicas, biológicas y humanas, y cómo interactúan entre sí."
+        },
+        {
+            "pregunta": "cual es el pais mas poblado del mundo",
+            "respuesta": "El país más poblado hasta diciembre de 2024, es la India con 1441 millones de habitantes"
+        },
+        {
+            "pregunta": "en que pais esta el everest",
+            "respuesta": "El Monte Everest esta ubicado en el límite de Nepal y China, sirviendo como frontera entre ambos países"
+        },
+        {
+            "pregunta": "en que pais esta el obelisco",
+            "respuesta": "El Obelisco está ubicado en la Ciudad Autonoma de Buenos Aires, Argentina"
+        },
+        {
+            "pregunta": "cual es el pais mas pequeño del mundo",
+            "respuesta": "El país más pequeño del mundo es El Vaticano"
+        },
+        {
+            "pregunta": "cuantos oceanos hay en la tierra",
+            "respuesta": "En la Tierra hay 5 océanos: Pacífico, Atlántico, Índico, Ártico y Antártico."
+        },
+        {
+            "pregunta": "cual es el rio mas largo del mundo",
+            "respuesta": "El río más largo es el Amazonas. Su recorrido está contemplado mayormente en el territorio de Brasil pero llega varios países más de Sudamérica"
+        },
+        {
+            "pregunta": "cual es el desierto mas grande del mundo",
+            "respuesta": "El desierto más grande del mundo es La Antartida"
+        }
+    ],
+    "preguntasConMarcadores": [
+        {
+            "pregunta": "En que continente queda *pais*",
+            "respuesta": "*pais* queda en *continente*"
+        },
+        {
+            "pregunta": "Donde queda *pais*",
+            "respuesta": "*pais* queda en *continente*"
+        },
+        {
+            "pregunta": "En que pais queda *ciudad*",
+            "respuesta": "*ciudad* queda en *pais*"
+        },
+        {
+            "pregunta": "Cual es la capital de *pais*",
+            "respuesta": "la capital de *pais* es *capital*"
+        }
     ]
-
-
 }
