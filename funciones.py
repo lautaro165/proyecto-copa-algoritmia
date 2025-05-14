@@ -1,36 +1,18 @@
-import re
+import json
 import unicodedata
 print("¡Hola! Soy tu chatbot de confianza para responder preguntas de geografía sobre la ubicación de países y sus capitales. Estoy aquí para ayudarte y espero poder complacerte con mis respuestas. ¡Estoy a la espera de tus preguntas!")
 print("--------------------------------")
-#-------------------------------------------------------------------------------------------------------------
 
-paises_data = [] 
-preguntas = [] 
-preguntas_patrones = []
 # -------------------------------------------------------------
 def cargar_datos():
-    """
-    Función encargada de abrir el archivo y de asignar a las variables globales sus datos correspondientes
-    Se usa al arranque del programa y en cada proceso donde se modifique el archivo 'preguntas.txt'
-    """
-    global paises_data, preguntas, preguntas_patrones
-    
-    with open("preguntas.txt", "r", encoding="utf-8") as file:
-        lineas = file.readlines()
-        for linea in lineas:
-            if linea.startswith("paises: "):
-                paises_data = re.findall(r"\((.*?)\)", linea)
-                
-                # Lista de tuplas con los datos de los paises que se van a usar en el programa
-                paises_data = [ tuple(pais_datos.split(", ")) for pais_datos in paises_data ]
-            elif linea.startswith("Preguntas: "):
-                # Se sacan las preguntas de las lineas por el contenido dentro de los paréntesis
-                preguntas = re.findall(r"\((.*?)\)", linea)
-                
-                # Se crea una lista de expresiones regulares para buscar la pregunta más adelante
-                preguntas_patrones = [ pregunta.replace("*pais*", r"(.+)").replace("*capital*",r"(.+)").replace("*continente*",r"(.+)") for pregunta in preguntas ]
-                
-cargar_datos()
+    with open("preguntas.json", "r", encoding="utf-8") as file:
+        archivo_json = json.load(file)
+        
+        paises_data = archivo_json.get("paises")
+        preguntas = archivo_json.get("preguntasSimples")
+        preguntas_patrones = archivo_json.get("preguntasConPatron")
+        
+        return paises_data, preguntas, preguntas_patrones
 
 #-------------------------------------------------------------------------------------------------------------
 
@@ -53,22 +35,16 @@ def eliminar_acentos(texto):
             
             texto_sin_acento += char_sin_acento
     return texto_sin_acento
-
-def leer_archivo():
-    """
-    Función encargada de leer el archivo 'preguntas.txt' y devolver una lista de líneas
-    para poder usar los datos de interes
-    """
-    with open("preguntas.txt","r",encoding="utf-8") as file:
-        return file.readlines()
     
-def escribir_archivo(archivo_actualizado):
-    """
-    Función encargada de escribir el archivo de preguntas con las lineas del archivo 
-    que recibe como parametro
-    """
-    with open("preguntas.txt","w", encoding="utf-8") as file:
-        file.writelines(archivo_actualizado)
+def escribir_archivo(paises_data, preguntas, preguntas_patrones):
+    archivo_actualizado = {
+        "paises":paises_data,
+        "preguntasSimples":preguntas,
+        "preguntasPatrones":preguntas_patrones
+    }
+    
+    with open("preguntas.json","w", encoding="utf-8") as file:
+        json.dump(archivo_actualizado, file, indent=4, ensure_ascii=False)
         
 def reemplazar_datos(respuesta, datos):
     """
@@ -92,9 +68,7 @@ def pedir_dato(mensaje_input, validacion_de_dato):
 # FUNCIONES DE VALIDACION
 
 def validar_pais(nombre):
-    """
-    La función busca que el pais que se haya ingresado no esté ya registrado
-    """
+    paises_data, _, _ = cargar_datos()
     paises_registrados = [eliminar_acentos(p[0].lower()) for p in paises_data]
 
     if not nombre:
@@ -111,9 +85,6 @@ def validar_pais(nombre):
     return True
 
 def validar_capital(nombre):
-    """
-    Solamente se valida no se envíe un string vacio como dato
-    """
     if not nombre:
         print(f"Se debe ingresar la capital del pais para poder registrarlo")
         return False
@@ -133,17 +104,19 @@ def validar_continente(nombre):
     if not nombre:
         print(f"Se debe ingresar el continente de {nombre.capitalize()} para poder registrarlo")
         return False
-    elif not nombre_sin_acentos in ["america", "africa", "asia", "oceania", "sudamerica", "norteamerica"]:
+    elif not nombre_sin_acentos in ["america", "africa", "asia", "oceania", "sudamerica", "norteamerica","centroamerica"]:
         print("Continente invalido")
         return False
     
     return nombre.capitalize()
 
+#Hay que poder agregar preguntas simples sin patrones
 def validar_pregunta(pregunta):
     """
     Se verifica que el formato de la pregunta a registrar contenga
     marcadores para poder crear una pregunta dinámica
     """
+    _, preguntas, _ = cargar_datos()
     marcadores = ["*capital*","*pais*"]
     
     if not pregunta:
@@ -158,6 +131,7 @@ def validar_pregunta(pregunta):
     
     return True
 
+#Falta poder agregar respuestas a preguntas sin patrones
 def validar_respuesta(respuesta):
     """
     Se verifica que el formato de la respuesta a registrar contenga 
