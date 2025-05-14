@@ -41,31 +41,31 @@ def agregar_pais():
     con todos los procesos de validación necesarios y de actualizar el 
     archivo en caso de que el proceso sea exitoso
     """
-    archivo = funciones.leer_archivo()
+    paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
     while True:
         print("--------------------------------")
         pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
         capital = funciones.pedir_dato(f'Ingrese el nombre de la capital de {pais}: ', funciones.validar_capital)
         continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
         
-        for i, linea in enumerate(archivo):
-            if linea.startswith("paises: "):
-                archivo[i] = f"{linea.strip()}, ({pais}, {capital}, {continente})\n"
-                break
+        paises_data.append({
+            "pais":pais,
+            "capital":capital,
+            "continente":continente
+        })
             
-        funciones.escribir_archivo(archivo)
+        funciones.escribir_archivo(paises_data,preguntas,preguntas_patrones)
         print("\nPais agregado exitosamente")
         print("--------------------------------")
-        
-        funciones.cargar_datos()
         break
 
-def agregar_pregunta():
+def agregar_pregunta(): #TERMINAR
     """
     Función encargada de pedir los datos necesarios para registrar una pregunta
     con todos los procesos de validación necesarios y de actualizar el 
     archivo en caso de que el proceso sea exitoso
     """
+    paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
     print("--------------------------------")
     
     print("Registre la pregunta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
@@ -82,13 +82,15 @@ def agregar_pregunta():
 
     print("--------------------------------")
 
-    archivo = funciones.leer_archivo()
-
-    for i, linea in enumerate(archivo):
-        if linea.startswith("Preguntas:"):
-            archivo[i] = f'{linea.strip()}, ({preg}, {resp})'
-            break
-    funciones.escribir_archivo(archivo)
+    pregunta_agregada = {
+        "pregunta":preg,
+        "respuesta":resp
+    }
+    
+    # Modificar la validacion para saber si la pregunta tiene patron de busqueda o no
+    # preguntas.append(pregunta_agregada) if ___ else preguntas_patrones.append(pregunta_agregada)
+    
+    funciones.escribir_archivo(paises_data, preguntas, preguntas_patrones)
     print('Pregunta registrada exitosamente!')
     print("--------------------------------")
     funciones.cargar_datos()

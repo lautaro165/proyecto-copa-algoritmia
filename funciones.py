@@ -10,7 +10,7 @@ def cargar_datos():
         
         paises_data = archivo_json.get("paises")
         preguntas = archivo_json.get("preguntasSimples")
-        preguntas_patrones = archivo_json.get("preguntasConPatron")
+        preguntas_patrones = archivo_json.get("preguntasPatrones")
         
         return paises_data, preguntas, preguntas_patrones
 

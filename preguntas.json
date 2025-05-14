@@ -108,7 +108,7 @@
             "respuesta": "El desierto más grande del mundo es La Antartida"
         }
     ],
-    "preguntasConMarcadores": [
+    "preguntasPatrones": [
         {
             "pregunta": "En que continente queda *pais*",
             "respuesta": "*pais* queda en *continente*"
