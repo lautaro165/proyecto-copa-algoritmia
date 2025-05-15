@@ -53,7 +53,7 @@ def reemplazar_datos(respuesta, datos):
     """
     return respuesta.replace("*pais*",datos[0]).replace("*capital*",datos[1]).replace("*continente*",datos[2])
 
-def pedir_dato(mensaje_input, validacion_de_dato):
+def pedir_dato(mensaje_input, validacion_de_dato, *args):
     """
     Función encargada de predir y procesar un dato y validarlo con la funcion 
     que se le pase como segundo parametro. En caso de no ser valido, se pide el
@@ -61,7 +61,7 @@ def pedir_dato(mensaje_input, validacion_de_dato):
     """
     while True:
         dato = input(mensaje_input).strip()
-        if validacion_de_dato(dato):
+        if validacion_de_dato(dato, *args):
             return dato.capitalize()
         print("--------------------------------")
 
@@ -110,39 +110,42 @@ def validar_continente(nombre):
     
     return nombre.capitalize()
 
-#Hay que poder agregar preguntas simples sin patrones
 def validar_pregunta(pregunta):
     """
     Se verifica que el formato de la pregunta a registrar contenga
     marcadores para poder crear una pregunta dinámica
     """
-    _, preguntas, _ = cargar_datos()
+    _, preguntas, preguntas_patrones = cargar_datos()
     marcadores = ["*capital*","*pais*"]
     
     if not pregunta:
         print("No se ingresó ninguna pregunta")
         return False
-    elif not any(marcador in pregunta for marcador in marcadores):
-        print("Para poder registrar la pregunta, ésta debe contener uno de los siguientes marcadores: *capital* o *pais* o *continente*")
-        return False
-    elif eliminar_acentos(pregunta) in preguntas:
+    
+    pregunta_sin_acentos = eliminar_acentos(pregunta)
+    
+    todas_preguntas = [p["pregunta"] for p in preguntas + preguntas_patrones]
+    if pregunta_sin_acentos in todas_preguntas:
         print("Disculpe, esa pregunta ya está registrada")
         return False
-    
-    return True
 
-#Falta poder agregar respuestas a preguntas sin patrones
-def validar_respuesta(respuesta):
-    """
-    Se verifica que el formato de la respuesta a registrar contenga 
-    marcadores para poder crear una respuesta dinámica
-    """
+    if any(marcador in pregunta for marcador in marcadores):
+        return pregunta, "dinamica"
+    return pregunta, "simple"
+
+def validar_respuesta(respuesta, tipo_pregunta):
     marcadores = ["*capital*","*pais*","*continente*"]
     
     if not respuesta:
         print("No se ingresó ninguna pregunta")
         return False
-    elif not any(marcador in respuesta for marcador in marcadores):
-        print("Para poder registrar la respuesta, ésta debe contener uno o más de los siguientes marcadores: *capital*, *pais* o *continente*")
-        return False
+    
+    if tipo_pregunta == "dinamica":
+        if not any(marcador in respuesta for marcador in respuesta):
+            print("Para una pregunta dinámica, la respuesta debe contener al menos un marcador: *capital*, *pais*, *continente*")
+            return False
+    elif tipo_pregunta == "simple":
+        if any(marcador in respuesta for marcador in marcadores):
+            print("Para una pregunta simple, la respuesta no debe contener marcadores")
+            return False
     return True

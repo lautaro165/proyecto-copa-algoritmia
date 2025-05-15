@@ -71,14 +71,16 @@ def agregar_pregunta(): #TERMINAR
     print("Registre la pregunta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
     print('Ejemplo: "¿En qué continente se encuentra *pais*?".')
 
-    preg = funciones.pedir_dato("Pregunta: ", funciones.validar_pregunta)
+    preg, tipo_pregunta = funciones.pedir_dato("Pregunta: ", funciones.validar_pregunta)
 
     print("--------------------------------")
     
-    print("Registre la respuesta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
-    print('Ejemplo: "*pais* está en *continente*".')
+    print("Ingrese la pregunta. Puede contener marcadores (*pais*, *capital*, *continente*) o ser simple con respuesta única.")
+    print('Ejemplos:')
+    print(' - "¿Cuál es la capital de *pais*?" (dinámica)')
+    print(' - "¿Cuál es el continente más grande?" (simple)')
     
-    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', funciones.validar_respuesta)
+    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', lambda r: funciones.validar_respuesta(r, tipo_pregunta))
 
     print("--------------------------------")
 
@@ -87,14 +89,11 @@ def agregar_pregunta(): #TERMINAR
         "respuesta":resp
     }
     
-    # Modificar la validacion para saber si la pregunta tiene patron de busqueda o no
-    # preguntas.append(pregunta_agregada) if ___ else preguntas_patrones.append(pregunta_agregada)
+    preguntas.append(pregunta_agregada) if tipo_pregunta == "simple" else preguntas_patrones.append(pregunta_agregada)
     
     funciones.escribir_archivo(paises_data, preguntas, preguntas_patrones)
     print('Pregunta registrada exitosamente!')
     print("--------------------------------")
-    funciones.cargar_datos()
-    
 
 def realizar_pregunta():
     """
