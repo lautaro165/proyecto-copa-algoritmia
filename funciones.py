@@ -19,12 +19,6 @@ def cargar_datos():
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
 def eliminar_acentos(texto):
-    
-    """
-    Función encargada de eliminar los acentos y caracteres especiales del texto excepto la letra 'ñ'.
-    Convierte caracteres acentuados a su versión base (e.g., 'é' se convierte a 'e').
-    """
-    
     texto_sin_acento = ""
     for char in texto: 
         if char.lower() == "ñ":
@@ -46,19 +40,22 @@ def escribir_archivo(paises_data, preguntas, preguntas_patrones):
     with open("preguntas.json","w", encoding="utf-8") as file:
         json.dump(archivo_actualizado, file, indent=4, ensure_ascii=False)
         
+def normalizar_marcadores(texto):
+    reemplazos = {
+        "(pais)": "*pais*",
+        "(capital)": "*capital*",
+        "(continente)": "*continente*"
+    }
+    
+    for key, value in reemplazos.items():
+        texto = texto.replace(key, value)
+    
+    return texto
+        
 def reemplazar_datos(respuesta, datos):
-    """
-    Función encargada de reemplazar los marcadores en la respuesta por los datos correspondientes
-    del pais, capital o continente de la respuesta final a una pregunta del usuario
-    """
     return respuesta.replace("*pais*",datos[0]).replace("*capital*",datos[1]).replace("*continente*",datos[2])
 
 def pedir_dato(mensaje_input, validacion_de_dato, *args):
-    """
-    Función encargada de predir y procesar un dato y validarlo con la funcion 
-    que se le pase como segundo parametro. En caso de no ser valido, se pide el
-    dato nuevamente, en caso de ser valido, se retorna el dato 
-    """
     while True:
         dato = input(mensaje_input).strip()
         if validacion_de_dato(dato, *args):
@@ -93,13 +90,8 @@ def validar_capital(nombre):
         return False
     
     return True
-    
-    
 
 def validar_continente(nombre):
-    """
-    Se verifica que el continente ingresado exista
-    """
     nombre_sin_acentos = eliminar_acentos(nombre.lower())
     if not nombre:
         print(f"Se debe ingresar el continente de {nombre.capitalize()} para poder registrarlo")
@@ -111,10 +103,6 @@ def validar_continente(nombre):
     return nombre.capitalize()
 
 def validar_pregunta(pregunta):
-    """
-    Se verifica que el formato de la pregunta a registrar contenga
-    marcadores para poder crear una pregunta dinámica
-    """
     _, preguntas, preguntas_patrones = cargar_datos()
     marcadores = ["*capital*","*pais*"]
     
