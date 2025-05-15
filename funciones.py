@@ -68,7 +68,7 @@ def pedir_dato(mensaje_input, validacion_de_dato, *args):
 
 def validar_pais(nombre):
     paises_data, _, _ = cargar_datos()
-    paises_registrados = [eliminar_acentos(p[0].lower()) for p in paises_data]
+    paises_registrados = [eliminar_acentos(p["pais"].lower()) for p in paises_data]
 
     if not nombre:
         print("No se ingresó el nombre de ningún país")
