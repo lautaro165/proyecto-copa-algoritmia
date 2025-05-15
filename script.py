@@ -4,10 +4,11 @@ import funciones
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
 def encontrar_pais(pregunta):
-    for i, dato in enumerate(funciones.paises_data):
+    paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
+    for i, dato in enumerate(paises_data):
         #Verificar que o la ciudad o el pais estén en la pregunta
-        nombre_pais = funciones.eliminar_acentos(dato[0].lower())
-        nombre_capital = funciones.eliminar_acentos(dato[1].lower())
+        nombre_pais = funciones.eliminar_acentos(dato["pais"].lower())
+        nombre_capital = funciones.eliminar_acentos(dato["capital"].lower())
         
         if nombre_pais in funciones.eliminar_acentos(pregunta.lower()) or nombre_capital in funciones.eliminar_acentos(pregunta.lower()):
             # Retorno el indice de los datos del pais
@@ -15,11 +16,21 @@ def encontrar_pais(pregunta):
     return None
 
 def encontrar_pregunta(pregunta):
-    for i, pregunta_patron in enumerate(funciones.preguntas_patrones):
-        # Se busca la expresion creada que coincida de principio a fin con la pregunta ingresada por el usuario
-        if re.fullmatch(funciones.eliminar_acentos(pregunta_patron.split(", ")[0].lower()), pregunta.lower()):
-            # Retorno el indice de la pregunta y su respuesta
-            return i
+    _, preguntas, preguntas_patrones = funciones.cargar_datos()
+
+    
+    preguntas_patrones = [{
+        "pregunta":p["pregunta"].replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)"),
+        "respuesta":p["respuesta"].replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)")
+    } for p in preguntas_patrones]
+    
+    for i, pregunta_registrada in enumerate(preguntas_patrones):
+        if re.fullmatch(funciones.eliminar_acentos(pregunta_registrada["pregunta"].lower()), pregunta.lower()):
+            return i, "dinamica"
+        
+    for i, pregunta_registrada in enumerate(preguntas):
+        if re.fullmatch(funciones.eliminar_acentos(pregunta_registrada["pregunta"].lower()), pregunta.lower()):
+            return i, "simple"
     return None
 
 
@@ -86,6 +97,7 @@ def agregar_pregunta():
 
 def realizar_pregunta():
     while True:
+        paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
         
         pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta o 'salir' si desea realizar otra accion: ")).replace("¿","").replace("?","")
         
@@ -98,21 +110,9 @@ def realizar_pregunta():
             print("--------------------------------")
             break
         
-        pregunta_indice = encontrar_pregunta(pregunta.lower())
-        pais_indice = encontrar_pais(pregunta.lower())
+        pregunta_datos = encontrar_pregunta(pregunta.lower())
         
-        
-        if pregunta_indice is not None and pais_indice is not None: # Caso donde tanto la pregunta como el pais están registrados
-            pais_data = funciones.paises_data[pais_indice]
-            respuesta_obtenida = funciones.preguntas[pregunta_indice].split(", ")[1].strip()
-            
-            respuesta_final = funciones.reemplazar_datos(respuesta_obtenida, pais_data)
-            
-            print("--------------------------------")
-            print(respuesta_final)
-            print("--------------------------------")
-            
-        elif pregunta_indice is None: # Caso donde la pregunta no es encontrada
+        if pregunta_datos is None:
             print("--------------------------------")
             print("Disculpe, no entendí su pregunta")
             while True:
@@ -132,59 +132,76 @@ def realizar_pregunta():
                     break
                 else:
                     break
-            continue    
-        elif pais_indice is None: # Caso donde no se encuentran los datos del pais/capital sobre el que se preguntó
-            print("--------------------------------")
-            print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
-            while True:
-                print("1 - Sí")
-                print("2 - No")
-                decision = input("").lower()
-                if not decision in ["1", "2", 'si', 'no']:
-                    print("Opcion invalida")
-                    continue
-                break
-            if decision == "1" or decision == "si":
-                agregar_pais()
-                break
-            if decision == "2" or decision == "no":
+            continue
+        
+        pregunta_indice, tipo_pregunta = pregunta_datos
+        pais_indice = encontrar_pais(pregunta.lower()) if tipo_pregunta == "dinamica" else None
+        
+        pregunta = preguntas[pregunta_indice].get("pregunta") if tipo_pregunta == "simple" else preguntas_patrones[pregunta_indice].get("pregunta")
+        respuesta = preguntas[pregunta_indice].get("respuesta") if tipo_pregunta == "simple" else preguntas_patrones[pregunta_indice].get("respuesta")
+        
+        if tipo_pregunta == "dinamica": 
+            if pais_indice is not None: # Se hace el proceso de conversion de los datos si la pregunta es dinamica
+                pais_data = paises_data[pais_indice]
+                respuesta = funciones.reemplazar_datos(respuesta, pais_data)
+                print(respuesta)
+            else: #Si el pais no esta registrado se pregunta si desea registrar o no
                 print("--------------------------------")
-                continue
-            print("--------------------------------")
-            # continue
+                print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
+                while True:
+                    print("1 - Sí")
+                    print("2 - No")
+                    decision = input("").lower()
+                    if not decision in ["1", "2", 'si', 'no', "s", "n"]:
+                        print("Opcion invalida")
+                        continue
+                    break
+                if decision == "1" or decision == "si" or decision == "s":
+                    agregar_pais()
+                    break
+                if decision == "2" or decision == "no" or decision == "n":
+                    print("--------------------------------")
+                    continue
+                print("--------------------------------")
+            continue
+        
+        #Si la pregunta es simple solamente se imprime la respuesta
+        print("--------------------------------")
+        print(respuesta)
+        print("--------------------------------")
         
         print("¿Tiene alguna otra pregunta? En caso de que no, solamente escriba 'salir'")
             
-        
+realizar_pregunta()
 
 #-------------------------------------------------------------------------------------------------------------
 
 # COMIENZO DEL FLUJO DEL PROGRAMA
 
-while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
+# while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
     
-    funciones.cargar_datos() #Se recargan los datos para asegurarse de refrescar los datos de los paises y preguntas registradas
+#     funciones.cargar_datos() #Se recargan los datos para asegurarse de refrescar los datos de los paises y preguntas registradas
     
-    print("Por favor, ingrese indique cual de las siguientes opciones desea realizar: ")
-    print("1 - Agregar pregunta")
-    print("2 - Registrar país") 
-    print("3 - Realizar una pregunta ")
-    print('4 - Salir\n')
-    opcion = funciones.eliminar_acentos(input("").strip())
-    if opcion == '1':
-        agregar_pregunta()
-    elif opcion == '2':
-        agregar_pais()
-    elif opcion == "3":
-        print("--------------------------------")
-        realizar_pregunta()
-    elif opcion == '4':
-        break
-    else:
-        print("--------------------------------")
-        print("Opción invalida")
-        print("--------------------------------")     
+#     print("Por favor, ingrese indique cual de las siguientes opciones desea realizar: ")
+#     print("1 - Agregar pregunta")
+#     print("2 - Registrar país") 
+#     print("3 - Realizar una pregunta ")
+#     print('4 - Salir\n')
+#     opcion = funciones.eliminar_acentos(input("").strip())
+#     if opcion == '1':
+#         agregar_pregunta()
+#     elif opcion == '2':
+#         agregar_pais()
+#     elif opcion == "3":
+#         print("--------------------------------")
+#         realizar_pregunta()
+#     elif opcion == '4':
+#         break
+#     else:
+#         print("--------------------------------")
+#         print("Opción invalida")
+#         print("--------------------------------")     
 
-print("--------------------------------")
-print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
-print("--------------------------------")
+# print("--------------------------------")
+# print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
+# print("--------------------------------")

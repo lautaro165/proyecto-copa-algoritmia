@@ -1,7 +1,9 @@
 import json
 import unicodedata
+
+print("------------------------------------------------------------------------------------------------")
 print("¡Hola! Soy tu chatbot de confianza para responder preguntas de geografía sobre la ubicación de países y sus capitales. Estoy aquí para ayudarte y espero poder complacerte con mis respuestas. ¡Estoy a la espera de tus preguntas!")
-print("--------------------------------")
+print("------------------------------------------------------------------------------------------------")
 
 # -------------------------------------------------------------
 def cargar_datos():
@@ -53,7 +55,7 @@ def normalizar_marcadores(texto):
     return texto
         
 def reemplazar_datos(respuesta, datos):
-    return respuesta.replace("*pais*",datos[0]).replace("*capital*",datos[1]).replace("*continente*",datos[2])
+    return respuesta.replace("*pais*",datos["pais"]).replace("*capital*",datos["capital"]).replace("*continente*",datos["continente"])
 
 def pedir_dato(mensaje_input, validacion_de_dato, *args):
     while True:
