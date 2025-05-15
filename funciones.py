@@ -60,7 +60,12 @@ def reemplazar_datos(respuesta, datos):
 def pedir_dato(mensaje_input, validacion_de_dato, *args):
     while True:
         dato = input(mensaje_input).strip()
-        if validacion_de_dato(dato, *args):
+        resultado_validacion = validacion_de_dato(dato, *args)
+        if isinstance(resultado_validacion, tuple):
+            return dato.capitalize(), resultado_validacion[1]  # Devolvemos el dato y el tipo de pregunta
+        
+        # En los demás casos, devolvemos solo el dato
+        elif resultado_validacion:
             return dato.capitalize()
         print("--------------------------------")
 
