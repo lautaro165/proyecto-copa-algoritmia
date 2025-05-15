@@ -4,13 +4,6 @@ import funciones
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
 def encontrar_pais(pregunta):
-    """
-    Función encargada de buscar los datos del pais que corresponda según
-    el nombre de país/capital que el usuario haya ingresado en la pregunta.
-    Si el pais está registrado, se devuelve su índice en la lista paises_data,
-    caso contrario, se retorna el valor None
-    """
-    
     for i, dato in enumerate(funciones.paises_data):
         #Verificar que o la ciudad o el pais estén en la pregunta
         nombre_pais = funciones.eliminar_acentos(dato[0].lower())
@@ -22,10 +15,6 @@ def encontrar_pais(pregunta):
     return None
 
 def encontrar_pregunta(pregunta):
-    """
-    Proceso similar al de la funcion encontrar_pais. Se busca que exista la pregunta
-    que el usuario ingresó
-    """
     for i, pregunta_patron in enumerate(funciones.preguntas_patrones):
         # Se busca la expresion creada que coincida de principio a fin con la pregunta ingresada por el usuario
         if re.fullmatch(funciones.eliminar_acentos(pregunta_patron.split(", ")[0].lower()), pregunta.lower()):
@@ -36,11 +25,6 @@ def encontrar_pregunta(pregunta):
 
 
 def agregar_pais():
-    """
-    Función encargada de pedir los datos necesarios para registrar un pais
-    con todos los procesos de validación necesarios y de actualizar el 
-    archivo en caso de que el proceso sea exitoso
-    """
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
     while True:
         print("--------------------------------")
@@ -59,28 +43,33 @@ def agregar_pais():
         print("--------------------------------")
         break
 
-def agregar_pregunta(): #TERMINAR
-    """
-    Función encargada de pedir los datos necesarios para registrar una pregunta
-    con todos los procesos de validación necesarios y de actualizar el 
-    archivo en caso de que el proceso sea exitoso
-    """
+def agregar_pregunta():
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
     print("--------------------------------")
-    
-    print("Registre la pregunta de manera genérica usando '*pais*' o '*capital*' como marcadores de manera literal.")
-    print('Ejemplo: "¿En qué continente se encuentra *pais*?".')
+    print("💡 INSTRUCCIONES PARA REGISTRAR UNA PREGUNTA 💡\n")
+    print("Puede registrar una pregunta de dos maneras:")
+    print("1. **Pregunta dinámica:** Utiliza marcadores para insertar datos de países registrados. Los marcadores disponibles son:")
+    print("   - (pais) → Reemplazado por el nombre del país.")
+    print("   - (capital) → Reemplazado por la capital del país.")
+    print("   - (continente) → Reemplazado por el continente del país.")
+    print("   Ejemplo: ¿Cuál es la capital de (pais)?")
+    print()
+    print("2. **Pregunta simple:** No contiene marcadores y tiene una única respuesta fija.")
+    print("   Ejemplo: ¿Cuál es el continente más grande del mundo?")
+    print("--------------------------------")
 
-    preg, tipo_pregunta = funciones.pedir_dato("Pregunta: ", funciones.validar_pregunta)
+    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta: ", funciones.validar_pregunta)
 
     print("--------------------------------")
-    
-    print("Ingrese la pregunta. Puede contener marcadores (*pais*, *capital*, *continente*) o ser simple con respuesta única.")
-    print('Ejemplos:')
-    print(' - "¿Cuál es la capital de *pais*?" (dinámica)')
-    print(' - "¿Cuál es el continente más grande?" (simple)')
-    
-    resp = funciones.pedir_dato('Ahora, ingrese la respuesta: ', lambda r: funciones.validar_respuesta(r, tipo_pregunta))
+    print("Ahora, ingrese la respuesta correspondiente.")
+    print("💡 Si la pregunta es dinámica, asegúrese de usar los mismos marcadores utilizados en la pregunta.")
+    print("   Ejemplos:")
+    print("   - Respuesta dinámica: (pais) está en (continente).")
+    print("   - Respuesta simple: El continente más grande es Asia.")
+    print("--------------------------------")
+
+    resp = funciones.pedir_dato('Ingrese la respuesta: ', lambda r: funciones.validar_respuesta(r, tipo_pregunta))
+
 
     print("--------------------------------")
 
@@ -92,14 +81,10 @@ def agregar_pregunta(): #TERMINAR
     preguntas.append(pregunta_agregada) if tipo_pregunta == "simple" else preguntas_patrones.append(pregunta_agregada)
     
     funciones.escribir_archivo(paises_data, preguntas, preguntas_patrones)
-    print('Pregunta registrada exitosamente!')
+    print(f'Pregunta {tipo_pregunta} registrada exitosamente!')
     print("--------------------------------")
 
 def realizar_pregunta():
-    """
-    Función encargada de procesar las preguntas ingresadas por el usuario, obteniendo los índices tanto
-    de la pregunta ingresada como del país sobre el que se hace la pregunta 
-    """
     while True:
         
         pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta o 'salir' si desea realizar otra accion: ")).replace("¿","").replace("?","")
