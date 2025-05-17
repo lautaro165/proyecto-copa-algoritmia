@@ -19,8 +19,8 @@ def encontrar_pregunta(pregunta):
     _, preguntas, preguntas_patrones = funciones.cargar_datos()
 
     preguntas_patrones = [{
-        "pregunta":p["pregunta"].replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)"),
-        "respuesta":p["respuesta"].replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)")
+        "pregunta": funciones.reemplazar_marcadores(p["pregunta"]),
+        "respuesta": funciones.reemplazar_marcadores(p["respuesta"])
     } for p in preguntas_patrones]
     
     for i, pregunta_registrada in enumerate(preguntas_patrones):
@@ -171,7 +171,7 @@ def realizar_pregunta():
                 print("--------------------------------")
                 print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
                 opcion = ""
-                while opcion.lower() not in ["1", "2", "si", "no"]:
+                while opcion.lower() not in ["1", "2", "si", "no"]: #Bucle para asegurarse de operar con valores validos
                     print("1 - Sí")
                     print("2 - No")
                     opcion = input("").lower()
@@ -179,9 +179,9 @@ def realizar_pregunta():
                         print("Opcion invalida")
                         print("----------------------------------------------------------------")
 
-                if opcion.lower() in ["1","si","s"] :
+                if opcion.lower() in ["1","si"] :
                     agregar_pais()
-                if opcion.lower() in ["2", "no", "n"]:
+                if opcion.lower() in ["2", "no"]:
                     print("--------------------------------")
                     repreguntar = False
                     continue

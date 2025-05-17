@@ -32,6 +32,9 @@ cargar_datos()
 
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
+def reemplazar_marcadores(texto):
+    return texto.replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)")
+
 def eliminar_acentos(texto):
     texto_sin_acento = ""
     for char in texto: 
