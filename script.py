@@ -57,7 +57,7 @@ def agregar_pais():
 def agregar_pregunta():
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
     print("--------------------------------")
-    print("💡 INSTRUCCIONES PARA REGISTRAR UNA PREGUNTA 💡\n")
+    print(" INSTRUCCIONES PARA REGISTRAR UNA PREGUNTA \n")
     print("Puede registrar una pregunta de dos maneras:")
     print("1. **Pregunta dinámica:** Utiliza marcadores para insertar datos de países registrados. Los marcadores disponibles son:")
     print("   - (pais) → Reemplazado por el nombre del país.")
@@ -73,7 +73,7 @@ def agregar_pregunta():
 
     print("--------------------------------")
     print("Ahora, ingrese la respuesta correspondiente.")
-    print("💡 Si la pregunta es dinámica, asegúrese de usar los mismos marcadores utilizados en la pregunta.")
+    print("Si la pregunta es dinámica, asegúrese de usar los mismos marcadores utilizados en la pregunta.")
     print("   Ejemplos:")
     print("   - Respuesta dinámica: (pais) está en (continente).")
     print("   - Respuesta simple: El continente más grande es Asia.")
@@ -177,7 +177,8 @@ def realizar_pregunta():
 # COMIENZO DEL FLUJO DEL PROGRAMA
 
 def menu_principal():
-    while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
+    opcion = ""
+    while opcion != "4": # Bucle creado para que reitere las opciones si lo ingresado no es valido
     
         funciones.cargar_datos() #Se recargan los datos para asegurarse de refrescar los datos de los paises y preguntas registradas
 
@@ -195,14 +196,13 @@ def menu_principal():
             print("--------------------------------")
             realizar_pregunta()
         elif opcion == '4':
-            break
+            print("--------------------------------")
+            print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
+            print("--------------------------------")
         else:
             print("--------------------------------")
             print("Opción invalida")
-            print("--------------------------------") 
-    print("--------------------------------")
-    print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
-    print("--------------------------------")
+            print("--------------------------------")
 
 if __name__ == "__main__":
     menu_principal()
