@@ -36,30 +36,31 @@ def encontrar_pregunta(pregunta):
 
 def agregar_pais():
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
-    while True:
+    print("--------------------------------")
+    pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
+    if pais.lower().strip() == "salir":
         print("--------------------------------")
-        pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
-        if pais.lower().strip() == "salir":
-            print("--------------------------------")
-            break
-        capital = funciones.pedir_dato(f'Ingrese el nombre de la capital de {pais}: ', funciones.validar_capital)
-        if capital.lower().strip() == "salir":
-            print("--------------------------------")
-            break
-        continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
-        if continente.lower().strip() == "salir":
-            print("--------------------------------")
-            break
-        paises_data.append({
-            "pais":pais,
-            "capital":capital,
-            "continente":continente
-        })
-            
-        funciones.escribir_archivo(paises_data,preguntas,preguntas_patrones)
-        print("\nPais agregado exitosamente")
+        return
+        
+    capital = funciones.pedir_dato(f'Ingrese el nombre de la capital de {pais}: ', funciones.validar_capital)
+    if capital.lower().strip() == "salir":
         print("--------------------------------")
-        break
+        return
+        
+    continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
+    if continente.lower().strip() == "salir":
+        print("--------------------------------")
+        return
+    
+    paises_data.append({
+        "pais":pais,
+        "capital":capital,
+        "continente":continente
+    })
+        
+    funciones.escribir_archivo(paises_data,preguntas,preguntas_patrones)
+    print("\nPais agregado exitosamente")
+    print("--------------------------------")
 
 def agregar_pregunta():
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()

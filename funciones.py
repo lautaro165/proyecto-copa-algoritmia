@@ -79,14 +79,14 @@ def pedir_dato(mensaje_input, validacion_de_dato, *args):
         resultado_validacion = validacion_de_dato(dato, *args)
 
         if isinstance(resultado_validacion, tuple):
-            return dato.capitalize(), resultado_validacion[1]  # Retorno especial para la validacion de preguntas, donde se retorna una tupla con la pregunta como tal y su tipo (dinamica o simple)
+            return dato.capitalize(), resultado_validacion[1]  # Caso especial para la validacion de preguntas, donde se retorna una tupla con la pregunta como tal y su tipo (dinamica o simple)
         
         # En los demás casos, devolvemos solo el dato
         elif resultado_validacion:
             return dato.capitalize()
         print("--------------------------------")
 
-# FUNCIONES DE VALIDACION
+# FUNCIONES DE VALIDACION DE DATOS
 
 def validar_pais(nombre):
     paises_data, _, _ = cargar_datos()
