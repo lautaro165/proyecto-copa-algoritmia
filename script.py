@@ -176,30 +176,33 @@ def realizar_pregunta():
 
 # COMIENZO DEL FLUJO DEL PROGRAMA
 
-while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
+def menu_principal():
+    while True: # Bucle creado para que reitere las opciones si lo ingresado no es valido
     
-    funciones.cargar_datos() #Se recargan los datos para asegurarse de refrescar los datos de los paises y preguntas registradas
-    
-    print("Por favor, ingrese indique cual de las siguientes opciones desea realizar: ")
-    print("1 - Agregar pregunta")
-    print("2 - Registrar país") 
-    print("3 - Realizar una pregunta ")
-    print('4 - Salir\n')
-    opcion = funciones.eliminar_acentos(input("").strip())
-    if opcion == '1':
-        agregar_pregunta()
-    elif opcion == '2':
-        agregar_pais()
-    elif opcion == "3":
-        print("--------------------------------")
-        realizar_pregunta()
-    elif opcion == '4':
-        break
-    else:
-        print("--------------------------------")
-        print("Opción invalida")
-        print("--------------------------------")     
+        funciones.cargar_datos() #Se recargan los datos para asegurarse de refrescar los datos de los paises y preguntas registradas
 
-print("--------------------------------")
-print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
-print("--------------------------------")
+        print("Por favor, ingrese indique cual de las siguientes opciones desea realizar: ")
+        print("1 - Agregar pregunta")
+        print("2 - Registrar país") 
+        print("3 - Realizar una pregunta ")
+        print('4 - Salir\n')
+        opcion = funciones.eliminar_acentos(input("").strip())
+        if opcion == '1':
+            agregar_pregunta()
+        elif opcion == '2':
+            agregar_pais()
+        elif opcion == "3":
+            print("--------------------------------")
+            realizar_pregunta()
+        elif opcion == '4':
+            break
+        else:
+            print("--------------------------------")
+            print("Opción invalida")
+            print("--------------------------------") 
+    print("--------------------------------")
+    print("Un placer ayudarte en lo que pueda, espero volver a verte pronto")
+    print("--------------------------------")
+
+if __name__ == "__main__":
+    menu_principal()
