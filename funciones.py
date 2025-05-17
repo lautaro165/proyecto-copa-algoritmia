@@ -7,15 +7,27 @@ print("-------------------------------------------------------------------------
 
 # -------------------------------------------------------------
 def cargar_datos():
-    with open("preguntas.json", "r", encoding="utf-8") as file:
-        archivo_json = json.load(file)
+    try:
+        with open("preguntas.json", "r", encoding="utf-8") as file:
+            archivo_json = json.load(file)
+            
+            paises_data = archivo_json.get("paises")
+            preguntas = archivo_json.get("preguntasSimples")
+            preguntas_patrones = archivo_json.get("preguntasPatrones")
+            
+            return paises_data, preguntas, preguntas_patrones
+    except FileNotFoundError:
+        print("Disculpe, no se ha encontrado el archivo 'preguntas.json', se creará uno nuevo")
+        escribir_archivo([],[],[])
+        return [],[],[]
+    except json.decoder.JSONDecodeError:
+        print("El archivo json tiene errores en su formato")
+        return [],[],[]
+    except Exception as e:
+        print(f"Ocurrió un error en la lectura del archivo: {e}")
+        return [],[],[]
         
-        paises_data = archivo_json.get("paises")
-        preguntas = archivo_json.get("preguntasSimples")
-        preguntas_patrones = archivo_json.get("preguntasPatrones")
-        
-        return paises_data, preguntas, preguntas_patrones
-
+cargar_datos()
 #-------------------------------------------------------------------------------------------------------------
 
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
@@ -39,8 +51,11 @@ def escribir_archivo(paises_data, preguntas, preguntas_patrones):
         "preguntasPatrones":preguntas_patrones
     }
     
-    with open("preguntas.json","w", encoding="utf-8") as file:
-        json.dump(archivo_actualizado, file, indent=4, ensure_ascii=False)
+    try:
+        with open("preguntas.json","w", encoding="utf-8") as file:
+            json.dump(archivo_actualizado, file, indent=4, ensure_ascii=False)
+    except Exception as e:
+        print(f"Ha ocurrido un error al escribir el archivo: {e}")
         
 def normalizar_marcadores(texto):
     reemplazos = {
