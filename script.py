@@ -62,7 +62,7 @@ def agregar_pais():
     print("\nPais agregado exitosamente")
     print("--------------------------------")
 
-def agregar_pregunta():
+def agregar_pregunta(): # Agregar que en cualquiera de las opciones si el usuario mete "salir" se corte el proceso (solamente hacer un return vacio adentro de esta funcion) y en lo posible agregar una opcion para que confirme el dato ingresado antes de pasar al siguiente
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
     print("--------------------------------")
     print(" INSTRUCCIONES PARA REGISTRAR UNA PREGUNTA \n")
@@ -78,7 +78,7 @@ def agregar_pregunta():
     print("escribi solo 'salir' en cualquier momento para volver para atras")
     print("--------------------------------")
 
-    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta: ", funciones.validar_pregunta())
+    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta: ", funciones.validar_pregunta)
     if preg.lower().strip() == "salir" or tipo_pregunta.lower().strip() == 'salir':
         print("--------------------------------")
         
@@ -109,7 +109,8 @@ def agregar_pregunta():
     print("--------------------------------")
 
 def realizar_pregunta():
-    while True:
+    repreguntar = True
+    while repreguntar:
         paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
         
         pregunta = funciones.eliminar_acentos(input("Ingrese su pregunta o 'salir' si desea realizar otra accion: ")).replace("¿","").replace("?","")
@@ -121,30 +122,37 @@ def realizar_pregunta():
         
         if pregunta.lower().strip() == "salir" or pregunta.lower().strip() == "no":
             print("--------------------------------")
-            break
+            return
         
         pregunta_datos = encontrar_pregunta(pregunta.lower())
         
         if pregunta_datos is None:
             print("--------------------------------")
             print("Disculpe, no entendí su pregunta")
-            while True:
+            
+            salir = False # Variable que indica si se debe salir del bucle o no
+            while not salir:
                 print("Digame si desea:")
                 print("1 - Reformularla")
                 print("2 - Registrarla")
-                decision = input("").strip()
+                print("3 - Salir al menú principal")
+                opcion = input("").lower().strip()
                 print("--------------------------------")
-                if not decision in ["1", "2"]: # Opciones validas que puede escribir el usuario
+                
+                if not opcion in ["1","2","3","salir"]: # Opciones validas que puede escribir el usuario
                     print("Disculpe, no se ingresó una opción valida")
                     print("--------------------------------")
-                    continue
-                elif decision == "1":
-                    break
-                elif decision == "2":
+                    
+                if opcion == "1":
+                    salir = True
+                    
+                elif opcion == "2":
                     agregar_pregunta()
-                    break
+                    salir = True
                 else:
-                    break
+                    return #Se corta la funcion completa si el usuario elige salir
+                
+            
             continue
         
         pregunta_indice, tipo_pregunta = pregunta_datos
@@ -153,6 +161,7 @@ def realizar_pregunta():
         pregunta = preguntas[pregunta_indice].get("pregunta") if tipo_pregunta == "simple" else preguntas_patrones[pregunta_indice].get("pregunta")
         respuesta = preguntas[pregunta_indice].get("respuesta") if tipo_pregunta == "simple" else preguntas_patrones[pregunta_indice].get("respuesta")
         
+        # En caso de que la pregunta sea dinamica y no simple
         if tipo_pregunta == "dinamica": 
             if pais_indice is not None: # Se hace el proceso de conversion de los datos si la pregunta es dinamica
                 pais_data = paises_data[pais_indice]
@@ -161,19 +170,20 @@ def realizar_pregunta():
             else: #Si el pais no esta registrado se pregunta si desea registrar o no
                 print("--------------------------------")
                 print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
-                while True:
+                opcion = ""
+                while opcion.lower() not in ["1", "2", "si", "no"]:
                     print("1 - Sí")
                     print("2 - No")
-                    decision = input("").lower()
-                    if not decision in ["1", "2", 'si', 'no', "s", "n"]:
+                    opcion = input("").lower()
+                    if not opcion in ["1", "2", 'si', 'no']:
                         print("Opcion invalida")
-                        continue
-                    break
-                if decision == "1" or decision == "si" or decision == "s":
+                        print("----------------------------------------------------------------")
+
+                if opcion.lower() in ["1","si","s"] :
                     agregar_pais()
-                    break
-                if decision == "2" or decision == "no" or decision == "n":
+                if opcion.lower() in ["2", "no", "n"]:
                     print("--------------------------------")
+                    repreguntar = False
                     continue
                 print("--------------------------------")
             continue
@@ -182,8 +192,6 @@ def realizar_pregunta():
         print("--------------------------------")
         print(respuesta)
         print("--------------------------------")
-        
-        print("¿Tiene alguna otra pregunta? En caso de que no, solamente escriba 'salir'")
 
 #-------------------------------------------------------------------------------------------------------------
 
