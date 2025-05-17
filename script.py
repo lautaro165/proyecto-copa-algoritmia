@@ -40,9 +40,17 @@ def agregar_pais():
     while True:
         print("--------------------------------")
         pais = funciones.pedir_dato('Ingrese el nombre de un pais para registrarlo: ', funciones.validar_pais)
+        if pais.lower().strip() == "salir":
+            print("--------------------------------")
+            break
         capital = funciones.pedir_dato(f'Ingrese el nombre de la capital de {pais}: ', funciones.validar_capital)
+        if capital.lower().strip() == "salir":
+            print("--------------------------------")
+            break
         continente = funciones.pedir_dato(f'Ingrese el continente de {pais}: ', funciones.validar_continente)
-        
+        if continente.lower().strip() == "salir":
+            print("--------------------------------")
+            break
         paises_data.append({
             "pais":pais,
             "capital":capital,
@@ -67,9 +75,14 @@ def agregar_pregunta():
     print()
     print("2. **Pregunta simple:** No contiene marcadores y tiene una única respuesta fija.")
     print("   Ejemplo: ¿Cuál es el continente más grande del mundo?")
+    print("escribi solo 'salir' en cualquier momento para volver para atras")
     print("--------------------------------")
 
-    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta: ", funciones.validar_pregunta)
+    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta: ", funciones.validar_pregunta())
+    if preg.lower().strip() == "salir" or tipo_pregunta.lower().strip() == 'salir':
+        print("--------------------------------")
+        
+   
 
     print("--------------------------------")
     print("Ahora, ingrese la respuesta correspondiente.")

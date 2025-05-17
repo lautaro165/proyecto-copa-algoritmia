@@ -127,7 +127,9 @@ def validar_continente(nombre):
 def validar_pregunta(pregunta):
     _, preguntas, preguntas_patrones = cargar_datos()
     marcadores = ["*capital*","*pais*"]
-    
+    if pregunta.lower().strip() == 'salir':
+        print("--------------------------------")
+        break
     if not pregunta:
         print("No se ingresó ninguna pregunta")
         return False
