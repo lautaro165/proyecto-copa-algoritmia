@@ -73,11 +73,13 @@ def reemplazar_datos(respuesta, datos):
     return respuesta.replace("*pais*",datos["pais"]).replace("*capital*",datos["capital"]).replace("*continente*",datos["continente"])
 
 def pedir_dato(mensaje_input, validacion_de_dato, *args):
-    while True:
+    resultado_validacion = None
+    while not resultado_validacion: # El bucle se ejecuta hasta que el resultado de la validacion de el dato sea valido (True)
         dato = input(mensaje_input).strip()
         resultado_validacion = validacion_de_dato(dato, *args)
+
         if isinstance(resultado_validacion, tuple):
-            return dato.capitalize(), resultado_validacion[1]  # Devolvemos el dato y el tipo de pregunta
+            return dato.capitalize(), resultado_validacion[1]  # Retorno especial para la validacion de preguntas, donde se retorna una tupla con la pregunta como tal y su tipo (dinamica o simple)
         
         # En los demás casos, devolvemos solo el dato
         elif resultado_validacion:
@@ -100,7 +102,6 @@ def validar_pais(nombre):
     elif eliminar_acentos(nombre.lower()) in paises_registrados:
         print(f"{nombre.capitalize()} ya está registrado")
         return False
-
     return True
 
 def validar_capital(nombre):
@@ -108,9 +109,8 @@ def validar_capital(nombre):
         print(f"Se debe ingresar la capital del pais para poder registrarlo")
         return False
     elif any(char.isdigit() for char in nombre):
-        print('ingrese el nombre sin ningun numero por favor')
+        print('Ingrese el nombre sin ningun numero por favor')
         return False
-    
     return True
 
 def validar_continente(nombre):
@@ -129,7 +129,7 @@ def validar_pregunta(pregunta):
     marcadores = ["*capital*","*pais*"]
     if pregunta.lower().strip() == 'salir':
         print("--------------------------------")
-        break
+        # break #Acá el break no va porque no es un bucle, en todo caso la validacion de que "salir" va dentro del bucle donde se está ejecutando esto
     if not pregunta:
         print("No se ingresó ninguna pregunta")
         return False
@@ -152,12 +152,10 @@ def validar_respuesta(respuesta, tipo_pregunta):
         print("No se ingresó ninguna pregunta")
         return False
     
-    if tipo_pregunta == "dinamica":
-        if not any(marcador in respuesta for marcador in respuesta):
-            print("Para una pregunta dinámica, la respuesta debe contener al menos un marcador: *capital*, *pais*, *continente*")
-            return False
-    elif tipo_pregunta == "simple":
-        if any(marcador in respuesta for marcador in marcadores):
-            print("Para una pregunta simple, la respuesta no debe contener marcadores")
-            return False
+    if tipo_pregunta == "dinamica" and not any(marcador in respuesta for marcador in respuesta):
+        print("Para una pregunta dinámica, la respuesta debe contener al menos un marcador: *capital*, *pais*, *continente*")
+        return False
+    elif tipo_pregunta == "simple" and any(marcador in respuesta for marcador in marcadores):
+        print("Para una pregunta simple, la respuesta no debe contener marcadores")
+        return False
     return True

@@ -4,7 +4,7 @@ import funciones
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
 def encontrar_pais(pregunta):
-    paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
+    paises_data, _, _ = funciones.cargar_datos()
     for i, dato in enumerate(paises_data):
         #Verificar que o la ciudad o el pais estén en la pregunta
         nombre_pais = funciones.eliminar_acentos(dato["pais"].lower())
@@ -18,7 +18,6 @@ def encontrar_pais(pregunta):
 def encontrar_pregunta(pregunta):
     _, preguntas, preguntas_patrones = funciones.cargar_datos()
 
-    
     preguntas_patrones = [{
         "pregunta":p["pregunta"].replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)"),
         "respuesta":p["respuesta"].replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)")
