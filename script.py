@@ -1,4 +1,4 @@
-import re
+import re, difflib
 import funciones
 
 #FUNCIONES PRINCIPALES DEL PROGRAMA
@@ -20,19 +20,41 @@ def encontrar_pregunta(pregunta):
 
     preguntas_patrones = [{
         "pregunta": funciones.reemplazar_marcadores(p["pregunta"]),
-        "respuesta": funciones.reemplazar_marcadores(p["respuesta"])
-    } for p in preguntas_patrones]
+        "respuesta": funciones.reemplazar_marcadores(p["respuesta"]),
+        "tipo": "dinamica",
+        "indice_original": i 
+    } for i, p in enumerate(preguntas_patrones)]
     
-    for i, pregunta_registrada in enumerate(preguntas_patrones):
-        if re.fullmatch(funciones.eliminar_acentos(pregunta_registrada["pregunta"].lower()), pregunta.lower()):
-            return i, "dinamica"
+    preguntas_unificadas = [{
+        "pregunta": p["pregunta"],
+        "respuesta":p["respuesta"],
+        "tipo": "simple",
+        "indice_original": i
+    } for i, p in enumerate(preguntas)] + preguntas_patrones
+    
+    # BUSQUEDA EXACTA DE LA PREGUNTA
+    for p in preguntas_unificadas:
+        if re.fullmatch(funciones.eliminar_acentos(p["pregunta"].lower()), pregunta.lower()):
+            return p["indice_original"], p["tipo"]
+    
+    preguntas_registros = [p["pregunta"].lower() for p in preguntas_unificadas]
+    
+    # BUSQUEDA DE SIMILITUDES EN CASO DE NO ENCONTRARSE LA PREGUNTA EXACTA
+    coincidencias = difflib.get_close_matches(pregunta.lower(), preguntas_registros, n=1, cutoff=0.6)
+
+    if coincidencias:
         
-    for i, pregunta_registrada in enumerate(preguntas):
-        if re.fullmatch(funciones.eliminar_acentos(pregunta_registrada["pregunta"].lower()), pregunta.lower()):
-            return i, "simple"
-    return None
+        indice_coincidencia = preguntas_registros.index(coincidencias[0])
+        
+        pregunta_similar = preguntas_unificadas[indice_coincidencia]
+        return pregunta_similar["indice_original"], pregunta_similar["tipo"]
 
+    # if coincidencias:
+    #     for p in preguntas_unificadas:
+    #         if pregunta.lower() == coincidencias[0]:
+    #             return p["indice_original"], p["tipo"]
 
+    # return None
 
 def agregar_pais():
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
@@ -124,7 +146,7 @@ def realizar_pregunta():
             print("--------------------------------")
             return
         
-        pregunta_datos = encontrar_pregunta(pregunta.lower())
+        pregunta_datos = encontrar_pregunta(pregunta)
         
         if pregunta_datos is None:
             print("--------------------------------")

@@ -1,5 +1,4 @@
-import json
-import unicodedata
+import unicodedata, json
 
 print("------------------------------------------------------------------------------------------------")
 print("¡Hola! Soy tu chatbot de confianza para responder preguntas de geografía sobre la ubicación de países y sus capitales. Estoy aquí para ayudarte y espero poder complacerte con mis respuestas. ¡Estoy a la espera de tus preguntas!")
@@ -26,8 +25,7 @@ def cargar_datos():
     except Exception as e:
         print(f"Ocurrió un error en la lectura del archivo: {e}")
         return [],[],[]
-        
-cargar_datos()
+    
 #-------------------------------------------------------------------------------------------------------------
 
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
