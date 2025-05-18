@@ -1,4 +1,5 @@
 {
+    "palabrasClave": ["pais", "continente", "capital", "rio", "grande", "mundo", "geografia", "poblado","everest", "obelisco", "oceano","pequeño","desierto",""],
     "paises": [
         {
             "pais": "Argentina",
