@@ -118,8 +118,8 @@
             "respuesta": "*pais* queda en *continente*"
         },
         {
-            "pregunta": "En que pais queda *ciudad*",
-            "respuesta": "*ciudad* queda en *pais*"
+            "pregunta": "En que pais queda *capital*",
+            "respuesta": "*capital* queda en *pais*"
         },
         {
             "pregunta": "Cual es la capital de *pais*",

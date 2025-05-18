@@ -40,7 +40,7 @@ def encontrar_pregunta(pregunta):
     preguntas_registros = [p["pregunta"].lower() for p in preguntas_unificadas]
     
     # BUSQUEDA DE SIMILITUDES EN CASO DE NO ENCONTRARSE LA PREGUNTA EXACTA
-    coincidencias = difflib.get_close_matches(pregunta.lower(), preguntas_registros, n=1, cutoff=0.6)
+    coincidencias = difflib.get_close_matches(pregunta.lower(), preguntas_registros, n=1, cutoff=0.55)
 
     if coincidencias:
         
@@ -48,13 +48,6 @@ def encontrar_pregunta(pregunta):
         
         pregunta_similar = preguntas_unificadas[indice_coincidencia]
         return pregunta_similar["indice_original"], pregunta_similar["tipo"]
-
-    # if coincidencias:
-    #     for p in preguntas_unificadas:
-    #         if pregunta.lower() == coincidencias[0]:
-    #             return p["indice_original"], p["tipo"]
-
-    # return None
 
 def agregar_pais():
     paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
