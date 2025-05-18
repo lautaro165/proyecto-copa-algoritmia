@@ -4,7 +4,7 @@ print("-------------------------------------------------------------------------
 print("¡Hola! Soy tu chatbot de confianza para responder preguntas de geografía sobre la ubicación de países y sus capitales. Estoy aquí para ayudarte y espero poder complacerte con mis respuestas. ¡Estoy a la espera de tus preguntas!")
 print("------------------------------------------------------------------------------------------------")
 
-# -------------------------------------------------------------
+# -------------------------------------------------------------    
 def cargar_datos():
     try:
         with open("preguntas.json", "r", encoding="utf-8") as file:
@@ -14,7 +14,14 @@ def cargar_datos():
             preguntas = archivo_json.get("preguntasSimples")
             preguntas_patrones = archivo_json.get("preguntasPatrones")
             
-            return paises_data, preguntas, preguntas_patrones
+            palabras_clave = archivo_json.get("palabrasClave",[])
+            
+            for p in paises_data:
+                palabras_clave.append(p["pais"].lower())
+                palabras_clave.append(p["capital"].lower())
+            
+            
+            return paises_data, preguntas, preguntas_patrones, palabras_clave
     except FileNotFoundError:
         print("Disculpe, no se ha encontrado el archivo 'preguntas.json', se creará uno nuevo")
         escribir_archivo([],[],[])
@@ -30,7 +37,9 @@ def cargar_datos():
 
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
-def reemplazar_marcadores(texto):
+def reemplazar_marcadores(texto, pais_data=None):
+    if pais_data:
+        return texto.replace("*pais*", eliminar_acentos(pais_data["pais"])).replace("*capital*", eliminar_acentos(pais_data["capital"])).replace("*continente*", eliminar_acentos(pais_data["continente"]))
     return texto.replace("*pais*", r"(.+)").replace("*capital*", r"(.+)").replace("*continente*", r"(.+)")
 
 def eliminar_acentos(texto):
@@ -90,7 +99,7 @@ def pedir_dato(mensaje_input, validacion_de_dato, *args):
 # FUNCIONES DE VALIDACION DE DATOS
 
 def validar_pais(nombre):
-    paises_data, _, _ = cargar_datos()
+    paises_data, _, _, _ = cargar_datos()
     paises_registrados = [eliminar_acentos(p["pais"].lower()) for p in paises_data]
 
     if not nombre:
@@ -126,7 +135,7 @@ def validar_continente(nombre):
     return nombre.capitalize()
 
 def validar_pregunta(pregunta):
-    _, preguntas, preguntas_patrones = cargar_datos()
+    _, preguntas, preguntas_patrones, _ = cargar_datos()
     marcadores = ["*capital*","*pais*"]
     if pregunta.lower().strip() == 'salir':
         print("--------------------------------")
