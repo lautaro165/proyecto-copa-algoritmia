@@ -38,7 +38,7 @@ def encontrar_pregunta(pregunta):
         "respuesta":p["respuesta"],
         "tipo": "simple",
         "indice_original": i
-    } for i, p in enumerate(preguntas)] + preguntas_patrones
+    } for i, p in enumerate(preguntas)] + preguntas_dinamicas
     
     # BUSQUEDA POR PALABRAS CLAVE
     if 1 < len(palabras_pregunta) <= 3:
@@ -69,10 +69,14 @@ def encontrar_pregunta(pregunta):
 
     if coincidencias:
         
-        indice_coincidencia = preguntas_registros.index(coincidencias[0])
+        coincidencia_mayor = coincidencias[0]
         
-        pregunta_similar = preguntas_unificadas[indice_coincidencia]
-        return pregunta_similar["indice_original"], pregunta_similar["tipo"]
+        print(coincidencia_mayor)
+        
+        for p in preguntas_unificadas:
+            print(p)
+            if p["pregunta"].lower() == coincidencia_mayor:
+                return p["indice_original"], p["tipo"]
 
 def agregar_pais():
     paises_data, preguntas, preguntas_patrones, _ = funciones.cargar_datos()
@@ -102,7 +106,7 @@ def agregar_pais():
     print("\nPais agregado exitosamente")
     print("--------------------------------")
 
-def agregar_pregunta(): # Agregar que en cualquiera de las opciones si el usuario mete "salir" se corte el proceso (solamente hacer un return vacio adentro de esta funcion) y en lo posible agregar una opcion para que confirme el dato ingresado antes de pasar al siguiente
+def agregar_pregunta():
     paises_data, preguntas, preguntas_patrones, _ = funciones.cargar_datos()
     print("--------------------------------")
     print(" INSTRUCCIONES PARA REGISTRAR UNA PREGUNTA \n")
@@ -118,9 +122,10 @@ def agregar_pregunta(): # Agregar que en cualquiera de las opciones si el usuari
     print("escribi solo 'salir' en cualquier momento para volver para atras")
     print("--------------------------------")
 
-    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta: ", funciones.validar_pregunta)
+    preg, tipo_pregunta = funciones.pedir_dato("Ingrese su pregunta (para salir ingrese 'salir'): ", funciones.validar_pregunta)
     if preg.lower().strip() == "salir" or tipo_pregunta.lower().strip() == 'salir':
         print("--------------------------------")
+        return
         
    
 
@@ -133,6 +138,11 @@ def agregar_pregunta(): # Agregar que en cualquiera de las opciones si el usuari
     print("--------------------------------")
 
     resp = funciones.pedir_dato('Ingrese la respuesta: ', lambda r: funciones.validar_respuesta(r, tipo_pregunta))
+    if resp.lower().strip() == "salir":
+        
+        print("ANULANDO")
+        print("--------------------------------")
+        return
 
 
     print("--------------------------------")
