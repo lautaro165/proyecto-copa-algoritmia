@@ -14,7 +14,7 @@ def cargar_datos():
             preguntas = archivo_json.get("preguntasSimples")
             preguntas_patrones = archivo_json.get("preguntasPatrones")
             
-            palabras_clave = archivo_json.get("palabrasClave",[])
+            palabras_clave = ["pais", "continente", "capital", "rio", "grande", "mundo", "geografia", "poblado","everest", "obelisco", "oceano","pequeño","desierto"]
             
             for p in paises_data:
                 palabras_clave.append(p["pais"].lower())
@@ -98,7 +98,7 @@ def escribir_archivo(paises_data, preguntas, preguntas_patrones):
     
     try:
         with open("preguntas.json","w", encoding="utf-8") as file:
-            json.dump(archivo_actualizado, file, indent=4, ensure_ascii=False)
+            json.dump(archivo_actualizado, file, indent=4, ensure_ascii=False, separators=(",", ": "))
     except Exception as e:
         print(f"Ha ocurrido un error al escribir el archivo: {e}")
         
