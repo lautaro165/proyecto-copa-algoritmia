@@ -1,5 +1,4 @@
 {
-    "palabrasClave": ["pais", "continente", "capital", "rio", "grande", "mundo", "geografia", "poblado","everest", "obelisco", "oceano","pequeño","desierto",""],
     "paises": [
         {
             "pais": "Argentina",
@@ -125,6 +124,10 @@
         {
             "pregunta": "Cual es la capital de *pais*",
             "respuesta": "la capital de *pais* es *capital*"
+        },
+        {
+            "pregunta": "La capital de que pais es *capital*",
+            "respuesta": "*capital* es la capital de *pais*"
         }
     ]
 }
