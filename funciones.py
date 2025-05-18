@@ -14,8 +14,10 @@ def cargar_datos():
             preguntas = archivo_json.get("preguntasSimples")
             preguntas_patrones = archivo_json.get("preguntasPatrones")
             
+            # Se establecen principales palabras clave
             palabras_clave = ["pais", "continente", "capital", "rio", "grande", "mundo", "geografia", "poblado","everest", "obelisco", "oceano","pequeño","desierto"]
             
+            #Se agregan a palabras_clave los paises y capitales registrados
             for p in paises_data:
                 palabras_clave.append(p["pais"].lower())
                 palabras_clave.append(p["capital"].lower())
@@ -125,6 +127,9 @@ def reemplazar_datos(respuesta, datos):
     return respuesta.replace("*pais*",datos["pais"]).replace("*capital*",datos["capital"]).replace("*continente*",datos["continente"])
 
 def pedir_dato(mensaje_input, validacion_de_dato, *args):
+    """
+    Funcion para pedir un dato al usuario hasta que pase la validacion indicada
+    """
     resultado_validacion = None
     while not resultado_validacion: # El bucle se ejecuta hasta que el resultado de la validacion de el dato sea valido (True)
         dato = input(mensaje_input).strip()

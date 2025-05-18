@@ -37,12 +37,7 @@ def encontrar_pregunta(pregunta):
         "indice_original": i
     } for i, p in enumerate(preguntas)] 
     
-    preguntas_unificadas = [{
-        "pregunta": p["pregunta"],
-        "respuesta":p["respuesta"],
-        "tipo": "simple",
-        "indice_original": i
-    } for i, p in enumerate(preguntas)] + preguntas_dinamicas
+    preguntas_unificadas = preguntas_simples + preguntas_dinamicas
     
     # BUSQUEDA POR PALABRAS CLAVE
     if 1 < len(palabras_pregunta) <= 3:
