@@ -38,39 +38,46 @@ def cargar_datos():
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
 def buscar_coincidencias(preguntas, palabras_clave, palabras_pregunta, pais_data=None):
-        coincidencias = []
-        for p in preguntas:
-            pregunta_texto = p["pregunta"].lower()
-            palabras_formateadas = pregunta_texto.split(" ")
-            
-            # Coincidencias con palabras clave
-            palabras_encontradas = sum(
-                1 for palabra in palabras_clave 
+    """
+    Funcion que se encarga de buscar las coincidencias entre las preguntas registradas y
+    una pregunta que el usuario ingresa
+    """
+        
+    coincidencias = []
+    for p in preguntas:
+        pregunta_texto = p["pregunta"].lower()
+        palabras_formateadas = pregunta_texto.split(" ")
+        
+        # Coincidencias con palabras clave
+        palabras_encontradas = sum(
+            1 for palabra in palabras_clave 
+            if palabra in palabras_formateadas and palabra in palabras_pregunta
+        )
+        
+        # Coincidencias con datos del país (solo si existe pais_data)
+        datos_de_pais_encontrados = 0
+        if pais_data:
+            datos_de_pais = " ".join(pais_data.values()).lower().split(" ")
+            datos_de_pais_encontrados = sum(
+                1 for palabra in datos_de_pais 
                 if palabra in palabras_formateadas and palabra in palabras_pregunta
             )
-            
-            # Coincidencias con datos del país (solo si existe pais_data)
-            datos_de_pais_encontrados = 0
-            if pais_data:
-                datos_de_pais = " ".join(pais_data.values()).lower().split(" ")
-                datos_de_pais_encontrados = sum(
-                    1 for palabra in datos_de_pais 
-                    if palabra in palabras_formateadas and palabra in palabras_pregunta
-                )
-
-            coincidencias_totales = palabras_encontradas + datos_de_pais_encontrados
-
-            if coincidencias_totales > 0:
-                coincidencias.append((p, coincidencias_totales))
-        
-        return coincidencias
+        coincidencias_totales = palabras_encontradas + datos_de_pais_encontrados
+        if coincidencias_totales > 0:
+            coincidencias.append((p, coincidencias_totales))
+    
+    return coincidencias
 
 def obtener_mejor_coincidencia(coincidencias):
-        if len(coincidencias) > 0:
-            coincidencias.sort(key=lambda x: x[1], reverse=True)
-            pregunta_seleccionada, _ = coincidencias[0]
-            return pregunta_seleccionada["indice_original"], pregunta_seleccionada["tipo"]
-        return None
+    """
+    Funcion que se usa para buscar la pregunta que mejor coincida con respecto
+    a una busqueda realizada por el usuario
+    """
+    if len(coincidencias) > 0:
+        coincidencias.sort(key=lambda x: x[1], reverse=True)
+        pregunta_seleccionada, _ = coincidencias[0]
+        return pregunta_seleccionada["indice_original"], pregunta_seleccionada["tipo"]
+    return None
 
 def reemplazar_marcadores(texto, pais_data=None):
     if pais_data:
@@ -171,7 +178,7 @@ def validar_continente(nombre):
 
 def validar_pregunta(pregunta):
     _, preguntas, preguntas_patrones, _ = cargar_datos()
-    marcadores = ["*capital*","*pais*"]
+    marcadores = ["*capital*","*pais*","(capital)","(pais)"]
     if pregunta.lower().strip() == 'salir':
         print("--------------------------------")
         # break #Acá el break no va porque no es un bucle, en todo caso la validacion de que "salir" va dentro del bucle donde se está ejecutando esto
@@ -179,7 +186,7 @@ def validar_pregunta(pregunta):
         print("No se ingresó ninguna pregunta")
         return False
     
-    pregunta_sin_acentos = eliminar_acentos(pregunta)
+    pregunta_sin_acentos = normalizar_marcadores(eliminar_acentos(pregunta))
     
     todas_preguntas = [p["pregunta"] for p in preguntas + preguntas_patrones]
     if pregunta_sin_acentos in todas_preguntas:
@@ -191,14 +198,17 @@ def validar_pregunta(pregunta):
     return pregunta, "simple"
 
 def validar_respuesta(respuesta, tipo_pregunta):
-    marcadores = ["*capital*","*pais*","*continente*"]
+    marcadores = ["*capital*","*pais*","*continente*","(capital)","(pais)","(continente)"]
+    
+    print("TIPO DE PREGUNTA")
+    print(tipo_pregunta)
     
     if not respuesta:
         print("No se ingresó ninguna pregunta")
         return False
     
-    if tipo_pregunta == "dinamica" and not any(marcador in respuesta for marcador in respuesta):
-        print("Para una pregunta dinámica, la respuesta debe contener al menos un marcador: *capital*, *pais*, *continente*")
+    if tipo_pregunta == "dinamica" and not any(marcador in respuesta for marcador in marcadores):
+        print("Para una pregunta dinámica, la respuesta debe contener al menos un marcador: (capital), (pais), (continente)")
         return False
     elif tipo_pregunta == "simple" and any(marcador in respuesta for marcador in marcadores):
         print("Para una pregunta simple, la respuesta no debe contener marcadores")

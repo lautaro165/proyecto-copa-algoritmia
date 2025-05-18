@@ -16,6 +16,10 @@ def encontrar_pais(pregunta):
     return None
 
 def encontrar_pregunta(pregunta):
+    """
+    Funcion que se encarga de buscar y encontrar una pregunta
+    en base a un input completo o mediante keywords
+    """
     paises_data, preguntas, preguntas_patrones, palabras_clave = funciones.cargar_datos()
     palabras_pregunta = funciones.eliminar_acentos(pregunta.lower()).split(" ")    
 
@@ -148,8 +152,8 @@ def agregar_pregunta():
     print("--------------------------------")
 
     pregunta_agregada = {
-        "pregunta":preg,
-        "respuesta":resp
+        "pregunta":funciones.normalizar_marcadores(preg),
+        "respuesta":funciones.normalizar_marcadores(resp)
     }
     
     preguntas.append(pregunta_agregada) if tipo_pregunta == "simple" else preguntas_patrones.append(pregunta_agregada)
