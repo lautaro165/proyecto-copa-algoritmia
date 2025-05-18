@@ -37,6 +37,41 @@ def cargar_datos():
 
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
+def buscar_coincidencias(preguntas, palabras_clave, palabras_pregunta, pais_data=None):
+        coincidencias = []
+        for p in preguntas:
+            pregunta_texto = p["pregunta"].lower()
+            palabras_formateadas = pregunta_texto.split(" ")
+            
+            # Coincidencias con palabras clave
+            palabras_encontradas = sum(
+                1 for palabra in palabras_clave 
+                if palabra in palabras_formateadas and palabra in palabras_pregunta
+            )
+            
+            # Coincidencias con datos del país (solo si existe pais_data)
+            datos_de_pais_encontrados = 0
+            if pais_data:
+                datos_de_pais = " ".join(pais_data.values()).lower().split(" ")
+                datos_de_pais_encontrados = sum(
+                    1 for palabra in datos_de_pais 
+                    if palabra in palabras_formateadas and palabra in palabras_pregunta
+                )
+
+            coincidencias_totales = palabras_encontradas + datos_de_pais_encontrados
+
+            if coincidencias_totales > 0:
+                coincidencias.append((p, coincidencias_totales))
+        
+        return coincidencias
+
+def obtener_mejor_coincidencia(coincidencias):
+        if len(coincidencias) > 0:
+            coincidencias.sort(key=lambda x: x[1], reverse=True)
+            pregunta_seleccionada, _ = coincidencias[0]
+            return pregunta_seleccionada["indice_original"], pregunta_seleccionada["tipo"]
+        return None
+
 def reemplazar_marcadores(texto, pais_data=None):
     if pais_data:
         return texto.replace("*pais*", eliminar_acentos(pais_data["pais"])).replace("*capital*", eliminar_acentos(pais_data["capital"])).replace("*continente*", eliminar_acentos(pais_data["continente"]))

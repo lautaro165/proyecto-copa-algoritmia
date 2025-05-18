@@ -41,66 +41,21 @@ def encontrar_pregunta(pregunta):
     } for i, p in enumerate(preguntas)] + preguntas_patrones
     
     # BUSQUEDA POR PALABRAS CLAVE
-    if  1 < len(palabras_pregunta) <= 3:
-        coincidencias = []
+    if 1 < len(palabras_pregunta) <= 3:
         pais_encontrado_indice = encontrar_pais(pregunta)
-        
-        #BUSQUEDA CON KEYWORD EN PREGUNTAS DINAMICAS
         if pais_encontrado_indice is not None:
             pais_data = paises_data[pais_encontrado_indice]
-            for p in preguntas_dinamicas: #SE BUSCA EN PREGUNTAS DINAMICAS
-                
-                pregunta_formateada = funciones.reemplazar_marcadores(p["pregunta"].lower(), pais_data).lower() # SE OBTIENE SOLO EL TEXTO DE LA PREGUNTA 
-                palabras_formateadas = pregunta_formateada.split(" ") # SE CONVIERTE A LISTA DE CADA PALABRA DE LA PREGUNTA
-                
-                palabras_encontradas = sum(
-                    1 for palabra in palabras_clave
-                    if palabra in palabras_formateadas and palabra in palabras_pregunta
-                )
-                
-                datos_de_pais = " ".join(pais_data.values()).lower().split(" ") # SE CONVIERTE A UNA LISTA DE PALABRAS PARA CONTEMPLAR CASOS DE DATOS COMPUESTOS POR DOS PALABRAS O MÁS
-                
-                datos_de_pais_encontrados = sum(
-                    1 for palabra in datos_de_pais
-                    if palabra in palabras_formateadas and palabra in palabras_pregunta
-                )
-                
-                coincidencias_totales = palabras_encontradas + datos_de_pais_encontrados
-                
-                if coincidencias_totales > 0:
-                    coincidencias.append((p, coincidencias_totales))
-            
-            if len(coincidencias) > 0:
-                coincidencias.sort(key=lambda x:x[1], reverse=True) #Se ordena de la que mas coincide a la que menos
-                
-                pregunta_seleccionada, _ = coincidencias[0] # Nos quedamos solo con la que mas coincide con las keywords ingresadas
-                return pregunta_seleccionada["indice_original"], pregunta_seleccionada["tipo"]
-    
-    elif len(palabras_pregunta) == 1: #SOLO BUSCAR EN PREGUNTAS SIMPLES
-        coincidencias = []
-        for p in preguntas_simples:
-            pregunta_simple = p["pregunta"].lower()
-            palabras_simple = pregunta_simple.split(" ") # LISTA DE CADA UNA DE LAS PALABRAS DE LA PREGUNTA SEPARADAS
-    
-            # Verificamos si la única palabra ingresada está en la pregunta simple
-            coincidencias_simples = sum(
-                1 for palabra in palabras_clave
-                if palabra in palabras_simple and palabra in palabras_pregunta
-            )            
-            if coincidencias_simples > 0:
-                coincidencias.append((p, coincidencias_simples))
+            coincidencias_dinamicas = funciones.buscar_coincidencias(preguntas_dinamicas,palabras_clave,palabras_pregunta, pais_data)
+            resultado = funciones.obtener_mejor_coincidencia(coincidencias_dinamicas)
+            if resultado:
+                return resultado
 
-        if len(coincidencias) > 0:
-            coincidencias.sort(key=lambda x:x[1], reverse=True) #Se ordena de la que mas coincide a la que menos
-            
-            pregunta_seleccionada, _ = coincidencias[0] # Nos quedamos solo con la que mas coincide con las keywords ingresadas
-            return pregunta_seleccionada["indice_original"], pregunta_seleccionada["tipo"]
-
-    for p in preguntas_unificadas:
-        total_coincidencias = sum(1 for palabra in palabras_pregunta if palabra in palabras_clave and palabra in p["pregunta"].lower())
-        
-        if total_coincidencias >= 3 or total_coincidencias == len(palabras_pregunta):
-            coincidencias.append((p, total_coincidencias))
+    # Búsqueda por palabras clave en preguntas simples (1 palabra)
+    elif len(palabras_pregunta) == 1:
+        coincidencias_simples = funciones.buscar_coincidencias(preguntas_simples,palabras_clave,palabras_pregunta)
+        resultado = funciones.obtener_mejor_coincidencia(coincidencias_simples)
+        if resultado:
+            return resultado
         
     # BUSQUEDA EXACTA DE LA PREGUNTA
     for p in preguntas_unificadas:
@@ -148,7 +103,7 @@ def agregar_pais():
     print("--------------------------------")
 
 def agregar_pregunta(): # Agregar que en cualquiera de las opciones si el usuario mete "salir" se corte el proceso (solamente hacer un return vacio adentro de esta funcion) y en lo posible agregar una opcion para que confirme el dato ingresado antes de pasar al siguiente
-    paises_data, preguntas, preguntas_patrones = funciones.cargar_datos()
+    paises_data, preguntas, preguntas_patrones, _ = funciones.cargar_datos()
     print("--------------------------------")
     print(" INSTRUCCIONES PARA REGISTRAR UNA PREGUNTA \n")
     print("Puede registrar una pregunta de dos maneras:")
@@ -251,7 +206,9 @@ def realizar_pregunta():
             if pais_indice is not None: # Se hace el proceso de conversion de los datos si la pregunta es dinamica
                 pais_data = paises_data[pais_indice]
                 respuesta = funciones.reemplazar_datos(respuesta, pais_data)
+                print("\n")
                 print(respuesta)
+                print("----------------------------------------------------------------")
             else: #Si el pais no esta registrado se pregunta si desea registrar o no
                 print("--------------------------------")
                 print("Disculpe, creo que no conozco el lugar que mencionas, ¿desea registrarlo?")
