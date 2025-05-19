@@ -4,7 +4,7 @@ import funciones
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
 
-def encontrar_pais(pregunta, cutoff=0.6):
+def encontrar_pais(pregunta, cutoff=0.5):
     
     STOPWORDS = {"pais", "ciudad", "capital", "de", "el", "la", "en", "y", "que"} #PALABRAS QUE LA FUNCION DEBE IGNORAR AL COMPARAR PARA ENCONTRAR LOS DATOS DEL PAIS
     
@@ -19,7 +19,7 @@ def encontrar_pais(pregunta, cutoff=0.6):
     for palabra in palabras_pregunta:
         if palabra in STOPWORDS or len(palabra) < 4:
             continue  # SE IGNORAN LAS PALABRAS IRRELEVANTES O MUY CORTAS
-
+        
         coincidencias_paises = difflib.get_close_matches(palabra, lista_paises, n=1, cutoff=cutoff)
         if coincidencias_paises:
             indice_pais = lista_paises.index(coincidencias_paises[0])
@@ -29,6 +29,10 @@ def encontrar_pais(pregunta, cutoff=0.6):
         if coincidencias_capitales:
             indice_capital = lista_capitales.index(coincidencias_capitales[0])
             return indice_capital
+        
+        similitudes_stopwords = difflib.get_close_matches(palabra, STOPWORDS, n=1, cutoff=0.8)
+        if similitudes_stopwords:
+            continue
     
     return None
 
