@@ -156,7 +156,7 @@ def validar_pais(nombre):
         return False
     
     elif any(char.isdigit() for char in nombre):
-        print('ingrese el nombre sin ningun numero por favor')
+        print('Ingrese el nombre sin ningun numero por favor')
         return False
     elif eliminar_acentos(nombre.lower()) in paises_registrados:
         print(f"{nombre.capitalize()} ya está registrado")
