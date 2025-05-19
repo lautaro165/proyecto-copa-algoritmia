@@ -126,6 +126,10 @@
             "respuesta": "la capital de *pais* es *capital*"
         },
         {
+            "pregunta": "De que pais es *capital*",
+            "respuesta": "*capital* es de *pais*"
+        },
+        {
             "pregunta": "La capital de que pais es *capital*",
             "respuesta": "*capital* es la capital de *pais*"
         }

@@ -22,7 +22,8 @@ def encontrar_pregunta(pregunta):
     """
     paises_data, preguntas, preguntas_patrones, palabras_clave = funciones.cargar_datos()
     palabras_pregunta = funciones.eliminar_acentos(pregunta.lower()).split(" ")    
-
+    pais_encontrado_indice = encontrar_pais(pregunta)
+    
     preguntas_dinamicas = [{
         "pregunta": p["pregunta"],
         "respuesta": p["respuesta"],
@@ -38,10 +39,26 @@ def encontrar_pregunta(pregunta):
     } for i, p in enumerate(preguntas)] 
     
     preguntas_unificadas = preguntas_simples + preguntas_dinamicas
+        
+    # BUSQUEDA EXACTA DE LA PREGUNTA
+    for p in preguntas_unificadas:
+        if re.fullmatch(funciones.eliminar_acentos(p["pregunta"].lower()), pregunta.lower()):
+            return p["indice_original"], p["tipo"]
     
+    preguntas_registros = [p["pregunta"].lower() for p in preguntas_simples] if pais_encontrado_indice is None else [p["pregunta"].lower() for p in preguntas_dinamicas]
+    
+    # BUSQUEDA DE SIMILITUDES EN CASO DE NO ENCONTRARSE LA PREGUNTA EXACTA
+    coincidencias = difflib.get_close_matches(pregunta.lower(), preguntas_registros, n=1, cutoff=0.55)
+
+    if coincidencias:
+        coincidencia_mayor = coincidencias[0]
+        
+        for p in preguntas_unificadas:
+            if p["pregunta"].lower() == coincidencia_mayor:
+                return p["indice_original"], p["tipo"]
+            
     # BUSQUEDA POR PALABRAS CLAVE
     if 1 < len(palabras_pregunta) <= 3:
-        pais_encontrado_indice = encontrar_pais(pregunta)
         if pais_encontrado_indice is not None:
             pais_data = paises_data[pais_encontrado_indice]
             coincidencias_dinamicas = funciones.buscar_coincidencias(preguntas_dinamicas,palabras_clave,palabras_pregunta, pais_data)
@@ -51,31 +68,11 @@ def encontrar_pregunta(pregunta):
 
     # Búsqueda por palabras clave en preguntas simples (1 palabra)
     elif len(palabras_pregunta) == 1:
+        
         coincidencias_simples = funciones.buscar_coincidencias(preguntas_simples,palabras_clave,palabras_pregunta)
         resultado = funciones.obtener_mejor_coincidencia(coincidencias_simples)
         if resultado:
             return resultado
-        
-    # BUSQUEDA EXACTA DE LA PREGUNTA
-    for p in preguntas_unificadas:
-        if re.fullmatch(funciones.eliminar_acentos(p["pregunta"].lower()), pregunta.lower()):
-            return p["indice_original"], p["tipo"]
-    
-    preguntas_registros = [p["pregunta"].lower() for p in preguntas_unificadas]
-    
-    # BUSQUEDA DE SIMILITUDES EN CASO DE NO ENCONTRARSE LA PREGUNTA EXACTA
-    coincidencias = difflib.get_close_matches(pregunta.lower(), preguntas_registros, n=1, cutoff=0.55)
-
-    if coincidencias:
-        
-        coincidencia_mayor = coincidencias[0]
-        
-        print(coincidencia_mayor)
-        
-        for p in preguntas_unificadas:
-            print(p)
-            if p["pregunta"].lower() == coincidencia_mayor:
-                return p["indice_original"], p["tipo"]
 
 def agregar_pais():
     paises_data, preguntas, preguntas_patrones, _ = funciones.cargar_datos()
@@ -138,9 +135,6 @@ def agregar_pregunta():
 
     resp = funciones.pedir_dato('Ingrese la respuesta: ', lambda r: funciones.validar_respuesta(r, tipo_pregunta))
     if resp.lower().strip() == "salir":
-        
-        print("ANULANDO")
-        print("--------------------------------")
         return
 
 

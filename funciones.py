@@ -9,14 +9,14 @@ def cargar_datos():
     try:
         with open("preguntas.json", "r", encoding="utf-8") as file:
             archivo_json = json.load(file)
-            
+
             paises_data = archivo_json.get("paises")
             preguntas = archivo_json.get("preguntasSimples")
             preguntas_patrones = archivo_json.get("preguntasPatrones")
-            
+
             # Se establecen principales palabras clave
-            palabras_clave = ["pais", "continente", "capital", "rio", "grande", "mundo", "geografia", "poblado","everest", "obelisco", "oceano","pequeño","desierto"]
-            
+            palabras_clave = ["pais", "continente","everest", "capital", "rio", "grande", "mundo", "geografia", "poblado", "obelisco", "oceano", "oceanos","pequeño","desierto"]
+
             #Se agregan a palabras_clave los paises y capitales registrados
             for p in paises_data:
                 palabras_clave.append(p["pais"].lower())
@@ -40,22 +40,16 @@ def cargar_datos():
 # FUNCIONES COMPLEMENTARIAS PARA EL FLUJO
 
 def buscar_coincidencias(preguntas, palabras_clave, palabras_pregunta, pais_data=None):
-    """
-    Funcion que se encarga de buscar las coincidencias entre las preguntas registradas y
-    una pregunta que el usuario ingresa
-    """
-        
     coincidencias = []
     for p in preguntas:
+            
         pregunta_texto = p["pregunta"].lower()
         palabras_formateadas = pregunta_texto.split(" ")
         
-        # Coincidencias con palabras clave
-        palabras_encontradas = sum(
-            1 for palabra in palabras_clave 
-            if palabra in palabras_formateadas and palabra in palabras_pregunta
-        )
-        
+        # Coincidencias exactas
+        if pregunta_texto == " ".join(palabras_pregunta):
+            return [(p, len(palabras_formateadas))]
+
         # Coincidencias con datos del país (solo si existe pais_data)
         datos_de_pais_encontrados = 0
         if pais_data:
@@ -64,11 +58,19 @@ def buscar_coincidencias(preguntas, palabras_clave, palabras_pregunta, pais_data
                 1 for palabra in datos_de_pais 
                 if palabra in palabras_formateadas and palabra in palabras_pregunta
             )
+
+        # Coincidencias con palabras clave
+        palabras_encontradas = sum(
+            1 for palabra in palabras_clave 
+            if palabra in palabras_formateadas and palabra in palabras_pregunta
+        )
+
         coincidencias_totales = palabras_encontradas + datos_de_pais_encontrados
         if coincidencias_totales > 0:
             coincidencias.append((p, coincidencias_totales))
-    
+
     return coincidencias
+
 
 def obtener_mejor_coincidencia(coincidencias):
     """
@@ -204,9 +206,6 @@ def validar_pregunta(pregunta):
 
 def validar_respuesta(respuesta, tipo_pregunta):
     marcadores = ["*capital*","*pais*","*continente*","(capital)","(pais)","(continente)"]
-    
-    print("TIPO DE PREGUNTA")
-    print(tipo_pregunta)
     
     if not respuesta:
         print("No se ingresó ninguna pregunta")
