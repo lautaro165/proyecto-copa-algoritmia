@@ -3,16 +3,33 @@ import funciones
 
 #FUNCIONES PRINCIPALES DEL PROGRAMA
 
-def encontrar_pais(pregunta):
+
+def encontrar_pais(pregunta, cutoff=0.6):
+    
+    STOPWORDS = {"pais", "ciudad", "capital", "de", "el", "la", "en", "y", "que"} #PALABRAS QUE LA FUNCION DEBE IGNORAR AL COMPARAR PARA ENCONTRAR LOS DATOS DEL PAIS
+    
     paises_data, _, _, _ = funciones.cargar_datos()
-    for i, dato in enumerate(paises_data):
-        #Verificar que o la ciudad o el pais estén en la pregunta
-        nombre_pais = funciones.eliminar_acentos(dato["pais"].lower())
-        nombre_capital = funciones.eliminar_acentos(dato["capital"].lower())
+    pregunta_sin_acentos = funciones.eliminar_acentos(pregunta.lower())
+    
+    lista_paises = [funciones.eliminar_acentos(dato["pais"].lower()) for dato in paises_data]
+    lista_capitales = [funciones.eliminar_acentos(dato["capital"].lower()) for dato in paises_data]
+
+    palabras_pregunta = pregunta_sin_acentos.split()
+    
+    for palabra in palabras_pregunta:
+        if palabra in STOPWORDS or len(palabra) < 4:
+            continue  # SE IGNORAN LAS PALABRAS IRRELEVANTES O MUY CORTAS
+
+        coincidencias_paises = difflib.get_close_matches(palabra, lista_paises, n=1, cutoff=cutoff)
+        if coincidencias_paises:
+            indice_pais = lista_paises.index(coincidencias_paises[0])
+            return indice_pais
         
-        if nombre_pais in funciones.eliminar_acentos(pregunta.lower()) or nombre_capital in funciones.eliminar_acentos(pregunta.lower()):
-            # Retorno el indice de los datos del pais
-            return i
+        coincidencias_capitales = difflib.get_close_matches(palabra, lista_capitales, n=1, cutoff=cutoff)
+        if coincidencias_capitales:
+            indice_capital = lista_capitales.index(coincidencias_capitales[0])
+            return indice_capital
+    
     return None
 
 def encontrar_pregunta(pregunta):
@@ -234,7 +251,7 @@ def realizar_pregunta():
             continue
         
         #Si la pregunta es simple solamente se imprime la respuesta
-        print("--------------------------------")
+        print("\n")
         print(respuesta)
         print("--------------------------------")
 
